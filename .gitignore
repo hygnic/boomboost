@@ -1,0 +1,13 @@
+/venv/
+/.idea/
+/.idea/SearchImage.iml
+/.idea/misc.xml
+/.idea/workspace.xml
+/.idea/vcs.xml
+/.idea
+/Local/
+/bin/dist/
+/bin/dist
+/bin/build/
+/bin/build
+/bin/build/bdist.win32/winexe/collect-2.7
