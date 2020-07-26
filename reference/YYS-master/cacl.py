@@ -9,8 +9,8 @@ def get_screen():
     # 截屏口令
     cmd_get = 'adb shell screencap -p /sdcard/screen_img.png'
     # 发送图片口令
-    cmd_send = 'adb pull sdcard/screen_img.png F:/yys'
-    # cmd_send = 'adb pull sdcard/screen_img.png G:\MoveOn'
+    # cmd_send = 'adb pull sdcard/screen_img.png F:/yys'
+    cmd_send = 'adb pull sdcard/screen_img.png G:/MoveOn/boomboost'
     # 截屏和发送操作
     os.system(cmd_get)
     os.system(cmd_send)
