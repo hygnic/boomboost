@@ -36,16 +36,37 @@ def get_randxy(x, y):  # (570, 650),(240, 310)
 def sleeptime(a=0.5, b=1.6):
 	"""产生a,b间的随机时间延迟"""
 	delay = random.uniform(a, b)
-	print "delay time:", delay
+	# print "delay time:", delay
 	sleep(delay)
 
 
-def humanbeing_click(x, y, a=0.5, b=1.6):
+def humanbeing_click(x, y, a=0.2, b =0.6):
+	"""
+	根据给出的x范围和y范围来随机确定一个其中的点，然后完成点击任务
+	:param x: (350, 439) 这是x取值范围
+	:param y: (535, 566) 这是y取值范围
+	:param a:
+	:param b:
+	:return:
+	"""
 	# combine get_randxy(x, y) and sleeptime()
 	spring_x, spring_y = get_randxy(x, y)
 	click = 'adb shell input tap {} {}'.format(spring_x, spring_y)
 	sleeptime(a, b)
 	os.system(click)
+
+def humanbeing_click_point(click_point, a=0.2, b =0.6):
+	"""
+	# 根据指定的点, 拟人化完成adb点击任务
+	:param click_point: （x,y）
+	:param a: 延迟 秒
+	:param b: 延迟 秒
+	:return:
+	"""
+	click = 'adb shell input tap {} {}'.format(click_point[0], click_point[1])
+	sleeptime(a, b)
+	os.system(click)
+
 
 
 def check_screen(match_method=cv2.TM_CCOEFF_NORMED):
@@ -125,7 +146,6 @@ def adb_back(a=0.1, b=0.3):
 # 		pass
 
 
-# 不用类 麻烦！
 class MatchTool(object):
 	pf = pathfile.Path()
 	
@@ -137,6 +157,8 @@ class MatchTool(object):
 		self.method = method
 		# cv2.imread 读取的屏幕截图组
 		self.screenshots = [1,2,3,4]
+		# 最小值的位置、最大值的位置、模板的高、模板的宽，由于我们使用cv2.TM_CCOEFF_NORMED算法，所以只有最大值的位置
+		self.location_size = []  # [min_loc, max_loc, h, w]
 		
 	# use this function to call self.screenshots
 	def return_screenshots(self):
@@ -168,7 +190,7 @@ class MatchTool(object):
 			adb_back()
 			self.back_to_main_menu()
 	
-	def image_match(self, temp, threshold):
+	def image_match(self, temp, threshold=0.8):
 		"""
 		使用模板文件（temp）与当前屏幕进行实时匹配
 		temp(String\Unicode\List): 匹配标志(模板)图片地址或者地址列表
@@ -209,87 +231,105 @@ class MatchTool(object):
 			result = result1.max()
 			if result > threshold:
 				# 显示图像
-				self.find_rectangle(temp_image, result1)
+				self.matched_rectangle(temp_image, result1)
 				return 1, result
 			else:
 				lg.debug("1104 not matched")
 				# 显示图像
-				self.find_rectangle(temp_image, result1)
+				self.matched_rectangle(temp_image, result1)
 				return 0, result
 			
 	# 给匹配上的图形添加一个图框，同时显示一个内缩的图框，返回内缩图框中的一个点
-	def find_rectangle(self,cv2temp,result):
+	def matched_rectangle(self, cv2temp, result):
 		""""""
 		min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+		
 		# 获取模板文件的高和宽，h, w
 		h, w = cv2temp.shape[:2]
 		max_lefttop = max_loc
 		max_rightbottom = (max_lefttop[0] + w, max_lefttop[1] + h)
+		self.location_size = [min_loc, max_loc, h, w]
 		
-		def get_randxy2(x, y):  # (570, 650),(240, 310)
-			"""产生一个在x,y二维区域内的随机位置,x,y为两个元素的列表，变量范围"""
-			xc = random.randint(x[0], x[1])
-			yc = random.randint(y[0], y[1])
-			print "x,y:", xc, yc
-			return xc, yc
+		lg.debug("max_lefttop:{}".format(max_lefttop))
+		lg.debug("max_rightbottom:{}".format(max_rightbottom))
 		
-		zoom_value = 0.25 # 缩放减去的范围，相当于减少X%的高和宽
-		# (x1,y1)是左上角的点，(x2,y2)是右下角的点，矩形内缩的话右上角的点值增加，右下角的点值减小
-		x1 = max_lefttop[0]
-		x2 = max_rightbottom[0]
-		y1 = max_lefttop[1]
-		y2 = max_rightbottom[1]
-		xlength = x2-x1
-		ylength = y2-y1
-		reduce_xlength = int(xlength*zoom_value//2)
-		reduce_ylength = int(ylength*zoom_value//2)
-		
-		newx1 = x1+reduce_xlength
-		newy1 = y1+reduce_ylength
-		newx2 = x2-reduce_xlength
-		newy2 = y2-reduce_ylength
-		new_lefttop = (newx1,newy1)
-		new_rightbottom = (newx2,newy2)
-		# 随机获取缩小图框中的一个点
-		random_point = get_randxy2((newx1, newx2),(newy1,newy2))
-		lg.debug("random_point:{}".format(random_point))
-		
-		lg.debug("xlength:{},ylength:{}".format(xlength, ylength))
-		lg.debug(max_lefttop)
-		lg.debug(max_rightbottom)
-		
-		image1 = self.return_screenshots()[-1]
-		cv2.rectangle(image1, max_lefttop, max_rightbottom, [0, 0, 0],3)
-		cv2.rectangle(image1, new_lefttop, new_rightbottom, [0, 0, 0],2)
+		current_screen = self.return_screenshots()[-1]
+		# [255, 245, 152]  [196, 228, 255]
+		cv2.rectangle(current_screen, max_lefttop, max_rightbottom, [255, 255, 255], 3)
 		lg.debug("show screen detected")
 		# cv2.resizeWindow("DC", 90, 100) # 改变大小，不是缩放
+		# def show_iamge():
+		# 	cv2.imshow("DC detected screen", current_screen)
+		# 	# cv2.destroyAllWindows()
+		# 	#  cv2.waitKey(0) 使opencv图像显示界面长期存在
+		# 	cv2.waitKey(1)
+		# show_iamge()
+	
+	def rectangle_point(self, zoom=0.25):
+		"""
+		直接在匹配上的区域内选择点，不用手动输入范围了
+		如果缩放指数为0，则直接获取匹配上区域内一个点，如果不为0，则在缩放的区域内选择一个点返回
+		zoom(Int):  zoom_factor 缩放减去的范围，相当于减少X%的高和宽, 越大缩小的越多
+		:return:
+		"""
+		min_loc, max_loc, height, width = self.location_size
+		max_lefttop = max_loc
+		if zoom != 0:
+			max_rightbottom = (max_lefttop[0] + width, max_lefttop[1] + height)
+			# (x1,y1)是左上角的点，(x2,y2)是右下角的点，矩形内缩的话右上角的点值增加，右下角的点值减小
+			x1 = max_lefttop[0]
+			x2 = max_rightbottom[0]
+			y1 = max_lefttop[1]
+			y2 = max_rightbottom[1]
+			# 进行内缩（负缓冲）操作
+			xlength = x2 - x1
+			ylength = y2 - y1
+			reduce_xlength = int(xlength * zoom // 2)
+			reduce_ylength = int(ylength * zoom // 2)
+			# new point
+			newx1 = x1 + reduce_xlength
+			newy1 = y1 + reduce_ylength
+			newx2 = x2 - reduce_xlength
+			newy2 = y2 - reduce_ylength
+			# 绘制缩小和的匹配图框
+			cv2.rectangle(
+				self.return_screenshots()[-1], (newx1,newy1), (newx2,newy2), [255, 255, 255], 2)
+			# 随机获取缩小图框中的一个点
+			random_point= self.get_randxy2((newx1, newx2), (newy1, newy2))
+			lg.debug("xlength:{},ylength:{}".format(xlength, ylength))
+			return random_point # (123,789)
+		else: # zoom为0的情况，表示在不缩放的区域内选择一个点
+			x = (max_lefttop[0],max_lefttop[0] + width)
+			y = (max_lefttop[1],max_lefttop[1] + height)
+			return self.get_randxy2(x,y)
+		
+	@staticmethod
+	def get_randxy2(x, y):  # (570, 650),(240, 310)
+		"""产生一个在x,y二维区域内的随机位置,x,y为两个元素的列表，变量范围"""
+		xc = random.randint(x[0], x[1])
+		yc = random.randint(y[0], y[1])
+		# print "x,y:", xc, yc
+		return xc, yc
+	
+	def show(self):
 		# 显示图像以及识别的图框
-		def show_iamge():
-			cv2.imshow("DC", self.screen_image)
-			# cv2.destroyAllWindows()
-			# 使opencv图像显示界面长期存在
-			cv2.waitKey(1)
+		cv2.imshow("DC detected screen", self.return_screenshots()[-1])
+		# cv2.destroyAllWindows()
+		#  cv2.waitKey(0) 使opencv图像显示界面长期存在
+		cv2.waitKey(1)
 		
-		show_iamge()
 
-		
+
+
 		
 if __name__ == '__main__':
 	os.chdir("../adb")
 	# os.system("adb connect 127.0.0.1:21503")
 	mt = MatchTool(cv2.TM_CCOEFF_NORMED)
-	# mt.screencapture()
-	# mt.screencapture()
-	# mt.screencapture()
-	# ss= mt.screencapture()
-	# th, tw = ss.shape[:2]
-	# print th,tw
-	# print "len:",len(mt.screenshots)
-	# print mt.screenshots
-	mt.image_match(ur"G:\MoveOn\boomboost\image\battle.png",0.8)
-	
-	humanbeing_click(lt.nightwordX, lt.nightwordY)
+	mt.image_match(ur"G:\MoveOn\boomboost\image\12.png",0.8)
+	point = mt.rectangle_point(0.25)
+	humanbeing_click_point(point)
+	mt.show()
 	sleeptime(2,3)
-	mt.image_match(ur"G:\MoveOn\boomboost\image\spp1.png", 0.8)
-	humanbeing_click(lt.menu_springX, lt.menu_springY)
+
 	
