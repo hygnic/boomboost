@@ -234,36 +234,28 @@ class MatchTool(object):
 				self.matched_rectangle(temp_image, result1)
 				return 1, result
 			else:
-				lg.debug("1104 not matched")
+				lg.warn("<1104> <{}> not matched!".format(temp))
 				# 显示图像
 				self.matched_rectangle(temp_image, result1)
 				return 0, result
 			
-	# 给匹配上的图形添加一个图框，同时显示一个内缩的图框，返回内缩图框中的一个点
+	# 给匹配上的图形添加一个图框
 	def matched_rectangle(self, cv2temp, result):
 		""""""
 		min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
-		
 		# 获取模板文件的高和宽，h, w
 		h, w = cv2temp.shape[:2]
 		max_lefttop = max_loc
 		max_rightbottom = (max_lefttop[0] + w, max_lefttop[1] + h)
+		# 将模板数据保存于 self.location_size，可以全局共享
 		self.location_size = [min_loc, max_loc, h, w]
 		
 		lg.debug("max_lefttop:{}".format(max_lefttop))
 		lg.debug("max_rightbottom:{}".format(max_rightbottom))
 		
 		current_screen = self.return_screenshots()[-1]
-		# [255, 245, 152]  [196, 228, 255]
 		cv2.rectangle(current_screen, max_lefttop, max_rightbottom, [255, 255, 255], 3)
 		lg.debug("show screen detected")
-		# cv2.resizeWindow("DC", 90, 100) # 改变大小，不是缩放
-		# def show_iamge():
-		# 	cv2.imshow("DC detected screen", current_screen)
-		# 	# cv2.destroyAllWindows()
-		# 	#  cv2.waitKey(0) 使opencv图像显示界面长期存在
-		# 	cv2.waitKey(1)
-		# show_iamge()
 	
 	def rectangle_point(self, zoom=0.25):
 		"""
@@ -318,9 +310,6 @@ class MatchTool(object):
 		#  cv2.waitKey(0) 使opencv图像显示界面长期存在
 		cv2.waitKey(1)
 		
-
-
-
 		
 if __name__ == '__main__':
 	os.chdir("../adb")
