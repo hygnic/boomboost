@@ -11,55 +11,103 @@ Usage:
 # ---------------------------------------------------------------------------
 import os
 import time
+import random
+import cv2
 
 from conf import DClocation
-from dcutility import humanbeing_click
+from dcutility import humanbeing_click,humanbeing_click_point,sleeptime
 from dcutility import image_match
-from dcutility import adb_back, get_randxy
+from dcutility import back, get_randxy
 from dcutility import ImageMatchSet
 
 
-lt = DClocation.Location()
+lt = DClocation.Farm()
 # image identification tool class
 ims = ImageMatchSet()
-
+# 获取战斗主界面
+# main_interface = ims.capture()
+# screenshot = ims.screenshots
 
 def farm_setup():
 	# to make sure all corrcet!
 	os.chdir("../adb")
 	# os.system("adb connect 127.0.0.1:21503")
 	# make sure the screen is showing the battle configuration interface
-	judgment_value, match_value = image_match(
-			u"G:/MoveOn/boomboost/image/farm/select.png",0.7)
-	print "0011 judgment_value:{} match_value:{}".format(judgment_value,
-														 match_value)
-	if judgment_value == 0:
-		print "program exits"
-		exit()
+	
 		
 def farm():
 	pass
 
-def change_charactor():
-	humanbeing_click(lt.fselectX,lt.fselectY)
-	time.sleep(3)
-	##################$$
-	# 向左滑动
-	x1,y1 = get_randxy((775,853),(511,672))
-	x2 = x1-700
-	y2 = y1
-	# 最后一个数字 100 表示整个操作的耗时 单位：毫秒
-	swipe = "adb shell input swipe {} {} {} {} 100".format(x1,y1,x2,y2)
-	# os.system(swipe)
-	# os.system(swipe)
-	os.system(swipe)
-	os.system(swipe)
-	#######################
-	# adb_back()
-	image_match("G:/MoveOn/boomboost/image/farm/select.png")
+def team_conf(vacancy):
+	"""
+	配置队伍，更换满级的角色
+	vacancy(Int): 1-5 从右到左替换几位child
+	return:
+	"""
 	
+	def screenswipe():
+		# 向左滑动
+		x1, y1 = get_randxy((775, 853), (511, 672))
+		x2 = x1 - 700
+		y2 = y1
+		# 最后一个数字 100 表示整个操作的耗时 单位：毫秒
+		# swipe = "adb shell input swipe {} {} {} {} 100".format(474,615,100,615)
+		swipe = "adb shell input swipe {} {} {} {} 100".format(x1, y1, x2, y2)
+		for i in xrange(0, random.randint(3, 5)):  # 滑动3到5次
+			os.system(swipe)
+			sleeptime(0.1, 0.4)
+	
+	# humanbeing_click(lt.fselectX,lt.fselectY)
+	time.sleep(1)
+	flag1 = "G:/MoveOn/boomboost/image/farm/flag1.png"
+	flag_res = ims.image_match(flag1)
+	if flag_res[0]==1:
+	
+		join = "G:/MoveOn/boomboost/image/farm/join_team.png"
+		# 重复角色
+		repeat = "G:/MoveOn/boomboost/image/farm/error1.png"
+		
+		# swipe screen
+		screenswipe()
+		# loop add child
+		for i in xrange(vacancy):
+			humanbeing_click(lt.join_teamX,lt.join_teamY)
+			time.sleep(0.2)
+			repeat_res = ims.image_match(repeat)
+			if repeat_res[0] == 1:  # 出现重复角色的问题
+				time.sleep(0.1)
+				# click back button
+				humanbeing_click(lt.confirm_backX, lt.confirm_backY)
+				time.sleep(0.2)
+				# click leftside child
+				humanbeing_click(lt.leftsideX, lt.leftsideY)
+				time.sleep(0.2)
+				# click join button
+				humanbeing_click(lt.join_teamX, lt.join_teamY)
+			# 将选择好的天子放到队伍中
+			time.sleep(0.2)
+			one_position = lt.position[i]
+			humanbeing_click(one_position[0], one_position[1])
+			time.sleep(0.2)
+		back()
+
+def auto_conf():
+	time.sleep(0.3)
+	# 配置自动战斗系统
+	auto_button= "G:/MoveOn/boomboost/image/farm/auto.png"
+	res, real_res = ims.image_match(auto_button, 0.85)
+	if res ==1:
+		# 进入连续战斗设置界面
+		point = ims.point()
+		humanbeing_click_point(point)
+		time.sleep(0.2)
+		humanbeing_click(lt.loopX,lt.loopY)
+		back()
 	
 if __name__ == '__main__':
-	farm_setup()
-	farm()
-	change_charactor()
+	os.chdir("../adb")
+	# os.system("adb connect 127.0.0.1:21503")
+	# farm_setup()
+	# farm()
+	team_conf(3)
+	auto_conf()

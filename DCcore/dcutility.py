@@ -16,10 +16,10 @@ import os
 import cv2
 import logging as lg  # TODO 设置其他颜色的日志输出未果
 from conf import pathfile
-from conf.DClocation import Location
+from conf.DClocation import Spring
 
 pf = pathfile.Path()
-lt = Location()
+lt = Spring()
 # 日志信息设置
 lg.basicConfig(
 	format="%(asctime)s >> %(funcName)s %(levelname)s: %(message)s",
@@ -30,7 +30,6 @@ def get_randxy(x, y):  # (570, 650),(240, 310)
 	"""产生一个在x,y二维区域内的随机位置,x,y为两个元素的列表，变量范围"""
 	xc = random.randint(x[0], x[1])
 	yc = random.randint(y[0], y[1])
-	print "x,y:", xc, yc
 	return xc, yc
 
 
@@ -128,7 +127,7 @@ def image_match(temp, match_value, match_method=cv2.TM_CCOEFF_NORMED):
 			return 0, result
 
 
-def adb_back(a=0.1, b=0.3):
+def back(a=0.1, b=0.3):
 	# 自带延迟返回
 	sleeptime(a, b)
 	back_code = "adb shell input keyevent 4"
@@ -157,20 +156,29 @@ class ImageMatchSet(object):
 		"""
 		self.method = method
 		# cv2.imread 读取的屏幕截图组
-		self.screenshots = [1,2,3,4]
+		self.__screenshots = [1, 2, 3, 4]
 		# 最小值的位置、最大值的位置、模板的高、模板的宽，由于我们使用cv2.TM_CCOEFF_NORMED算法，所以只有最大值的位置
 		self.location_size = []  # [min_loc, max_loc, h, w]
 		
-	# use this function to call self.screenshots
-	def return_screenshots(self):
-		# limit the number of items within 4
-		if len(self.screenshots)>3: # TODO 填3才会变成4，不管了，反正只有最后两张图片
-			self.screenshots = self.screenshots[-3:]
-		return self.screenshots
+	# use this function to call self.__screenshots
 	
-	def screencapture(self):
-		# 使用adb内置截屏功能
-		# 返回最新截屏的cv2读取数据
+	@property
+	def screenshots(self):
+		"""
+		limit the number of screenshots within 4
+		warn:The reason why not use self.__screenshots directly is to make sure the
+		screenshots list within 4 or less item.
+		:return: last 4 screenshot picture
+		"""
+		if len(self.__screenshots)>=4:
+			self.__screenshots = self.__screenshots[-4:]
+		return self.__screenshots
+	
+	def capture(self):
+		"""
+		使用adb内置截屏功能,将截屏图片加入self.__screenshots中
+		:return: 返回最新截屏的cv2读取数据
+		"""
 		cmd_get = "adb shell screencap -p /sdcard/screen_img.png"
 		cmd_send = "adb pull sdcard/screen_img.png G:/MoveOn/boomboost/image"
 		os.system(cmd_get)
@@ -178,7 +186,7 @@ class ImageMatchSet(object):
 		# 记录当前屏幕截图（cv2读取数据）
 		screen_image = cv2.imread("../image/screen_img.png", 0)
 		# 将截图（cv2读取数据）加入self.screenshots列表中
-		screens = self.return_screenshots()
+		screens = self.screenshots
 		screens.append(screen_image)
 		return screen_image
 	
@@ -188,19 +196,21 @@ class ImageMatchSet(object):
 		cv2value1, cv2real_value = image_match(self.pf.mian_flags, 0.8)
 		if 1 not in cv2value1:
 			print cv2real_value
-			adb_back()
+			back()
 			self.back_to_main_menu()
 	
-	def image_match(self, temp, screen_image, threshold=0.8):
+	def image_match(self, temp, threshold=0.8, screen_image=None):
 		"""
 		使用模板文件（temp）与当前屏幕进行实时匹配
 		temp(String\Unicode\List): 匹配标志(模板)图片地址或者地址列表
-		screen_image(cv2.imread): 与模板比较的cv2图片数据
+		screen_image(cv2.imread): 与模板比较的cv2图片数据，如果不指定，截取当前屏幕
 		threshold(Int\Float): 阈值 Threshold，cv2匹配结果大于阈值返回1
 		screen(String): default value
 		:return: 返回1或者0，以及一个图像识别匹配最大值
 		"""
-		
+		# if not assign screen_image, function self.capture() assign to screen_image
+		if screen_image is None:
+			screen_image = self.capture()
 		if isinstance(temp, list):
 			cv2images = []
 			cv2match_result = []
@@ -221,17 +231,21 @@ class ImageMatchSet(object):
 			result = result1.max()
 			if result > threshold:
 				# 显示图像
-				self.matched_rectangle(temp_image, result1)
+				self.rectangle(temp_image, result1)
 				return 1, result
 			else:
 				lg.warn("<1104> <{}> not matched!".format(temp))
 				# 显示图像
-				self.matched_rectangle(temp_image, result1)
+				self.rectangle(temp_image, result1)
 				return 0, result
 			
-	# 给匹配上的图形添加一个图框
-	def matched_rectangle(self, cv2temp, result):
-		""""""
+	def rectangle(self, cv2temp, result):
+		"""
+		添加一个图框，不用手动，与self.image_match()方法绑定
+		:param cv2temp: 模板文件
+		:param result: 匹配结果
+		:return:
+		"""
 		min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
 		# 获取模板文件的高和宽，h, w
 		h, w = cv2temp.shape[:2]
@@ -243,11 +257,12 @@ class ImageMatchSet(object):
 		lg.debug("max_lefttop:{}".format(max_lefttop))
 		lg.debug("max_rightbottom:{}".format(max_rightbottom))
 		
-		current_screen = self.return_screenshots()[-1]
+		current_screen = self.screenshots[-1]
 		cv2.rectangle(current_screen, max_lefttop, max_rightbottom, [255, 255, 255], 3)
 		lg.debug("show screen detected")
 	
-	def rectangle_point(self, zoom=0.25):
+	# 在图框区域选一个点
+	def point(self, zoom=0.25):
 		"""
 		直接在匹配上的区域内选择点，不用手动输入范围了
 		如果缩放指数为0，则直接获取匹配上区域内一个点，如果不为0，则在缩放的区域内选择一个点返回
@@ -275,7 +290,7 @@ class ImageMatchSet(object):
 			newy2 = y2 - reduce_ylength
 			# 绘制缩小和的匹配图框
 			cv2.rectangle(
-				self.return_screenshots()[-1], (newx1,newy1), (newx2,newy2), [255, 255, 255], 2)
+				self.screenshots[-1], (newx1, newy1), (newx2, newy2), [255, 255, 255], 2)
 			# 随机获取缩小图框中的一个点
 			random_point= self.get_randxy2((newx1, newx2), (newy1, newy2))
 			lg.debug("xlength:{},ylength:{}".format(xlength, ylength))
@@ -295,7 +310,7 @@ class ImageMatchSet(object):
 	
 	def show(self):
 		# 显示图像以及识别的图框
-		cv2.imshow("DC detected screen", self.return_screenshots()[-1])
+		cv2.imshow("DC detected screen", self.screenshots[-1])
 		# cv2.destroyAllWindows()
 		#  cv2.waitKey(0) 使opencv图像显示界面长期存在
 		cv2.waitKey(1)
@@ -305,10 +320,10 @@ if __name__ == '__main__':
 	os.chdir("../adb")
 	# os.system("adb connect 127.0.0.1:21503")
 	mt = ImageMatchSet(cv2.TM_CCOEFF_NORMED)
-	mt.image_match(ur"G:\MoveOn\boomboost\image\12.png",0.8)
-	point = mt.rectangle_point(0.25)
-	humanbeing_click_point(point)
+	mt.image_match(ur"G:\MoveOn\boomboost\image\farm\select.png",0.8)
+	# point = mt.point(0.25)
+	# humanbeing_click_point(point)
 	mt.show()
-	sleeptime(2,3)
+	sleeptime(50,60)
 
 	

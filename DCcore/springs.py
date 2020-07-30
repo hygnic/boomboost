@@ -13,9 +13,9 @@ import os
 import time
 from conf import DClocation,pathfile
 from dcutility import humanbeing_click
-from dcutility import image_match,sleeptime,adb_back
+from dcutility import image_match,sleeptime,back
 pf = pathfile.Path()
-lt = DClocation.Location()
+lt = DClocation.Spring()
 
 def mian():
 	os.chdir("../adb")
@@ -80,12 +80,12 @@ def replace_towels(housex, housey):
 			# re1,re2 = image_match(ur"G:\MoveOn\boomboost\image\spring\after_spa.png",0.85)
 			humanbeing_click(lt.after_spaX, lt.after_spaY)
 			time.sleep(1)
-			adb_back()
+			back()
 			time.sleep(5)
 	
 	else:
 		print "no !"
-		adb_back() # 没有感叹号，返回房子那里
+		back() # 没有感叹号，返回房子那里
 		time.sleep(5)
 	
 

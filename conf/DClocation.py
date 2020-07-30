@@ -11,10 +11,9 @@ Usage:
 # ---------------------------------------------------------------------------
 
 
-class Location(object):
+class Spring(object):
 	def __init__(self):
 		self.spring()
-		self.fram()
 		self.settings()
 	
 	def settings(self):
@@ -70,14 +69,18 @@ class Location(object):
 		self.after_spaX = (456, 540)
 		self.after_spaY = (500, 530)
 	
-	
-	
+
+class Farm(object):
+	def __init__(self):
+		self.fram()
+		
 	def fram(self):
 		self.fselectX = (396, 602)
 		self.fselectY = (173, 200)
 		
 		# ----------------------------------------------------------------------
-		# battle position 五个上场位置
+		# battle position 五个上场位置 从左到右
+		
 		self.first_poltX = (309, 373)
 		self.first_poltY = (79, 254)
 		
@@ -96,3 +99,26 @@ class Location(object):
 		# join_team
 		self.join_teamX = (316, 422)
 		self.join_teamY = (426, 456)
+		# 上面五个位置的列表，*从右到左
+		self.position = [
+			[self.fifth_poltX, self.fifth_poltY],
+			[self.fourth_poltX, self.fourth_poltY],
+			[self.third_poltX, self.third_poltY],
+			[self.second_poltX, self.second_poltY],
+			[self.first_poltX, self.first_poltY]
+						 ]
+		
+		
+		# 重复角色 返回
+		self.confirm_backX = (442, 555)
+		self.confirm_backY = (499, 537)
+		
+		# selcet leftside child 遇到重复的天子，点击以选择左边的天子
+		self.leftsideX = (264, 320)
+		self.leftsideY = (539, 683)
+		
+		# 循环战斗按钮
+		self.loopX = (302, 319)
+		self.loopY = (284, 299)
+		
+		
