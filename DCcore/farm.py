@@ -5,7 +5,7 @@
 # Created on: 2020/7/26 14:07
 # Reference:
 """
-Description: 自动刷图，角色等级满级后自动换上新角色
+Description: 自动刷图，角色等级满级后自动换上新角色，开始界面必须是小队配置界面！
 Usage:
 """
 # ---------------------------------------------------------------------------
@@ -16,14 +16,18 @@ from conf import DClocation
 from dcutility import humanbeing_click
 from dcutility import image_match
 from dcutility import adb_back, get_randxy
-
+from dcutility import ImageMatchSet
 
 
 lt = DClocation.Location()
+# image identification tool class
+ims = ImageMatchSet()
+
 
 def farm_setup():
 	# to make sure all corrcet!
 	os.chdir("../adb")
+	# os.system("adb connect 127.0.0.1:21503")
 	# make sure the screen is showing the battle configuration interface
 	judgment_value, match_value = image_match(
 			u"G:/MoveOn/boomboost/image/farm/select.png",0.7)

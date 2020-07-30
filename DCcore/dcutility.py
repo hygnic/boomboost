@@ -147,10 +147,10 @@ def adb_back(a=0.1, b=0.3):
 # 		pass
 
 
-class MatchTool(object):
+class ImageMatchSet(object):
 	pf = pathfile.Path()
 	
-	def __init__(self, method):
+	def __init__(self, method = cv2.TM_CCOEFF_NORMED):
 		"""
 		:param method:
 			method usualy :cv2.TM_CCOEFF_NORMED
@@ -191,26 +191,15 @@ class MatchTool(object):
 			adb_back()
 			self.back_to_main_menu()
 	
-	def image_match(self, temp, threshold=0.8):
+	def image_match(self, temp, screen_image, threshold=0.8):
 		"""
 		使用模板文件（temp）与当前屏幕进行实时匹配
 		temp(String\Unicode\List): 匹配标志(模板)图片地址或者地址列表
+		screen_image(cv2.imread): 与模板比较的cv2图片数据
 		threshold(Int\Float): 阈值 Threshold，cv2匹配结果大于阈值返回1
 		screen(String): default value
 		:return: 返回1或者0，以及一个图像识别匹配最大值
 		"""
-		# get screencapture
-		# 1.old method
-		# cmd_get = "adb shell screencap -p /sdcard/screen_img.png"
-		# cmd_send = "adb pull sdcard/screen_img.png G:/MoveOn/boomboost/image"
-		# os.system(cmd_get)
-		# os.system(cmd_send)
-		# # 记录当前屏幕截图
-		# screen_image = cv2.imread("../image/screen_img.png", 0)
-		# 2.new method
-		# 也可以使用 self.screen_image 来达到各个方法都能方面屏幕截图，
-			# 但是可以用事先写好的 self.return_screenshots 获取最近的4张屏幕截图列表
-		screen_image = self.screencapture()
 		
 		if isinstance(temp, list):
 			cv2images = []
@@ -315,7 +304,7 @@ class MatchTool(object):
 if __name__ == '__main__':
 	os.chdir("../adb")
 	# os.system("adb connect 127.0.0.1:21503")
-	mt = MatchTool(cv2.TM_CCOEFF_NORMED)
+	mt = ImageMatchSet(cv2.TM_CCOEFF_NORMED)
 	mt.image_match(ur"G:\MoveOn\boomboost\image\12.png",0.8)
 	point = mt.rectangle_point(0.25)
 	humanbeing_click_point(point)
