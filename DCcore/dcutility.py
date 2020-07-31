@@ -134,18 +134,6 @@ def back(a=0.1, b=0.3):
 	os.system(back_code)
 
 
-# class NewList(list):
-# 	def __init__(self,num):
-# 		list.__init__([])
-# 		self.num = num
-# 		slen = len(self)
-# 		if slen>num:
-# 			self = self[2:]
-#
-# 	def get_len(self):
-# 		pass
-
-
 class ImageMatchSet(object):
 	pf = pathfile.Path()
 	
@@ -206,7 +194,8 @@ class ImageMatchSet(object):
 		screen_image(cv2.imread): 与模板比较的cv2图片数据，如果不指定，截取当前屏幕
 		threshold(Int\Float): 阈值 Threshold，cv2匹配结果大于阈值返回1
 		screen(String): default value
-		:return: 返回1或者0，以及一个图像识别匹配最大值
+		return:
+			模板是单个文件（String\Unicode）:返回1或者0，以及一个图像识别匹配最大值
 		"""
 		# if not assign screen_image, function self.capture() assign to screen_image
 		if screen_image is None:

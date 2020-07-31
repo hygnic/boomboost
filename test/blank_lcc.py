@@ -9,6 +9,16 @@ Description:
 Usage:
 """
 # ---------------------------------------------------------------------------
-ss = [1,2,3,4]
-sw,we,fd,dd = ss
-print sw
+import cv2
+
+image = r"G:\MoveOn\boomboost\image\spring\spring_house.png"
+cv2image = cv2.imread(image, 0)
+
+
+cropped = cv2image[0:128, 0:512] # 裁剪坐标为[y0:y1, x0:x1]
+# cv2.imwrite("./data/cut/cv_cut_thor.jpg", cropped)
+
+
+
+cv2.imshow("kk",cropped)
+cv2.waitKey(0)

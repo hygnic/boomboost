@@ -121,4 +121,8 @@ class Farm(object):
 		self.loopX = (302, 319)
 		self.loopY = (284, 299)
 		
+		# 裁剪等级显示区域
+		self.croppedX = (125,300)
+		self.croppedY = (100,148)
+		
 		
