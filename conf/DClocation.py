@@ -122,7 +122,80 @@ class Farm(object):
 		self.loopY = (284, 299)
 		
 		# 裁剪等级显示区域
-		self.croppedX = (125,300)
-		self.croppedY = (100,148)
+		# 裁剪结果示例 数字 1 "G:\MoveOn\boomboost\image\示例文件\1.png"
+		self.croppedX = (401,405)
+		self.croppedY = (600,621)
+		
+		
+class General(object):
+	"""通常设置的常见按键的位置 """
+	def __init__(self):
+		self.charater_interface()
+		
+	def charater_interface(self):
+		# 进入筛选按钮 （中间靠右黑色）
+		self.filterX = (667, 749)
+		self.filterY = (360, 388)
+		
+		# 裁剪 勾选影藏选项 （右上角）
+		self.auto_hideX = (630, 648)
+		self.auto_hideY = (79, 98)
+		
+		# 排序按钮 （靠上）
+		self.sortX = (503, 565)
+		self.sortY = (75, 100)
+		
+		# 排序方式 第一个
+		self.sort1X = (360, 563)
+		self.sort1Y = (137, 166)
+		
+		# 排序方式 第二个
+		self.sort2X = (350, 632)
+		self.sort2Y = (188, 220)
+		
+		# 点击一颗星的
+		self.star1X = (320, 413)
+		self.star1Y = (495, 523)
+		
+		# 点击二颗星的
+		self.star2X = (450, 552)
+		self.star2Y = (495, 523)
+		
+		# 点击角色右边
+		self.rightsideX = (420, 485)
+		self.rightsideY = (527, 691)
+		
+		# 角色右侧裁剪区域，用于判断右边是否还有角色
+		self.cropped_rightsideX = (432, 632)
+		self.cropped_rightsideY = (429, 708)
+		
+		
+class AgateToCoin(object):
+	def __init__(self):
+		# 查看角色属性的按键
+		self.open_attributeX = (290, 421)
+		self.open_attributeY = (702, 736)
+		
+		# 打开提升友好度的按键
+		self.open_attributeX = (290, 421)
+		self.open_attributeY = (702, 736)
+		
+		# 裁剪友好度显示区域
+		# 使用 G:\MoveOn\boomboost\image\agate2coin\point_zero.png 与裁剪结果比较
+		self.croppedX = (410, 518)
+		self.croppedY = (142, 148)
+		
+		# 点击D class、C class之类的
+		self.impression_classX = (395, 432)
+		self.impression_classY = (379, 428)
+		
+		# 红色的确认键
+		self.improve_impression_confirmX = (457, 543)
+		self.improve_impression_confirmY = (586, 618)
+		
+		# 上方粉色的确认键
+		self.rewardX = (456, 543)
+		self.rewardY = (180, 209)
+		
 		
 		

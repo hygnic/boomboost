@@ -15,11 +15,18 @@ import random
 import os
 import cv2
 import logging as lg  # TODO 设置其他颜色的日志输出未果
+from conf.DClocation import General
 from conf import pathfile
 from conf.DClocation import Spring
 
-pf = pathfile.Path()
-lt = Spring()
+
+image_pf = pathfile.Path() # 部分配置的图片地址信息 #TODO 我也不知道是哪里的
+image_g = pathfile.ImageDCGeneral() # 通用配置的图片地址信息
+
+lt_sp = Spring()  # 温泉位置位置信息 #TODO 之后删除这个
+lt_gl = General()  # 位置信息
+
+
 # 日志信息设置
 lg.basicConfig(
 	format="%(asctime)s >> %(funcName)s %(levelname)s: %(message)s",
@@ -31,6 +38,23 @@ def get_randxy(x, y):  # (570, 650),(240, 310)
 	xc = random.randint(x[0], x[1])
 	yc = random.randint(y[0], y[1])
 	return xc, yc
+
+def screenswipe(rx, ry, rx2, ry2):
+	# 向左滑动
+	# x1, y1 = get_randxy((775, 853), (511, 672))
+	# x2, y2 = get_randxy((75, 853), (120, 672))
+	
+	x1, y1 = get_randxy(rx, ry)
+	x2, y2 = get_randxy(rx2, ry2)
+	# 毫秒 随机
+	millisecond = random.randint(86, 101)
+	# 最后一个数字 100 表示整个操作的耗时 单位：毫秒
+	# swipe = "adb shell input swipe {} {} {} {} 100".format(474,615,100,615)
+	swipe = "adb shell input swipe {} {} {} {} {}".format(x1, y1, x2,
+														   y2,millisecond)
+	for screenswipe_time in xrange(0, random.randint(3, 5)):  # 滑动3到5次
+		os.system(swipe)
+		sleeptime(0.6, 0.8)
 
 
 def sleeptime(a=0.5, b=1.6):
@@ -72,20 +96,23 @@ def humanbeing_click_point(click_point, a=0.2, b =0.6):
 def check_screen(match_method=cv2.TM_CCOEFF_NORMED):
 	# 预处理，监测当前页面是否存在异常（是否退出界面和重连界面）
 	screen_image = cv2.imread("../image/screen_img.png", 0)
-	check1 = cv2.imread(pf.quit, 0)
-	check2 = cv2.imread(pf.network_error, 0)
+	check1 = cv2.imread(image_pf.quit, 0)
+	check2 = cv2.imread(image_pf.network_error, 0)
 	result = cv2.matchTemplate(screen_image, check1, match_method)
 	if result.max() > 0.8:
 		# 询问退出 填否
-		humanbeing_click(lt.no_quitX, lt.no_quitY)
+		humanbeing_click(lt_sp.no_quitX, lt_sp.no_quitY)
 		lg.debug(u"拒绝退出")
 		sleep(1.5)
 	result = cv2.matchTemplate(screen_image, check2, match_method)
 	if result.max() > 0.8:
 		# 询问网络问题，确认重连
-		humanbeing_click(lt.reconnectX, lt.reconnectY)
+		humanbeing_click(lt_sp.reconnectX, lt_sp.reconnectY)
 		lg.debug(u"重连网络")
 		sleep(5)
+
+
+
 
 
 def image_match(temp, match_value, match_method=cv2.TM_CCOEFF_NORMED):
@@ -135,7 +162,7 @@ def back(a=0.1, b=0.3):
 
 
 class ImageMatchSet(object):
-	pf = pathfile.Path()
+	image_pf = pathfile.Path()
 	
 	def __init__(self, method = cv2.TM_CCOEFF_NORMED):
 		"""
@@ -216,16 +243,16 @@ class ImageMatchSet(object):
 		
 		if isinstance(temp, str) or isinstance(temp, unicode):
 			temp_image = cv2.imread(temp, 0)  # 只读取灰度图
-			result1 = cv2.matchTemplate(screen_image, temp_image, self.method)
-			result = result1.max()
+			self.result_array = cv2.matchTemplate(screen_image, temp_image, self.method)
+			result = self.result_array.max()
 			if result > threshold:
 				# 显示图像
-				self.rectangle(temp_image, result1)
+				self.rectangle(temp_image, self.result_array)
 				return 1, result
 			else:
 				lg.warn("<1104> <{}> not matched!".format(temp))
 				# 显示图像
-				self.rectangle(temp_image, result1)
+				self.rectangle(temp_image, self.result_array)
 				return 0, result
 			
 	def rectangle(self, cv2temp, result):
@@ -251,11 +278,13 @@ class ImageMatchSet(object):
 		lg.debug("show screen detected")
 	
 	# 在图框区域选一个点
-	def point(self, zoom=0.25):
+	def point(self, zoom=0.25, x_add=0, y_add =0):
 		"""
 		直接在匹配上的区域内选择点，不用手动输入范围了
 		如果缩放指数为0，则直接获取匹配上区域内一个点，如果不为0，则在缩放的区域内选择一个点返回
 		zoom(Int):  zoom_factor 缩放减去的范围，相当于减少X%的高和宽, 越大缩小的越多
+		x_add(Float): 在某个偏移距离内的方形中选取点
+		y_add(Float): 在某个偏移距离内的方形中选取点
 		:return:
 		"""
 		min_loc, max_loc, height, width = self.location_size
@@ -277,11 +306,13 @@ class ImageMatchSet(object):
 			newy1 = y1 + reduce_ylength
 			newx2 = x2 - reduce_xlength
 			newy2 = y2 - reduce_ylength
-			# 绘制缩小和的匹配图框
+			# 绘制缩小的匹配图框
 			cv2.rectangle(
 				self.screenshots[-1], (newx1, newy1), (newx2, newy2), [255, 255, 255], 2)
 			# 随机获取缩小图框中的一个点
-			random_point= self.get_randxy2((newx1, newx2), (newy1, newy2))
+			random_point= self.get_randxy2(
+				(newx1+x_add, newx2+x_add), (newy1+y_add, newy2+y_add)
+			)
 			lg.debug("xlength:{},ylength:{}".format(xlength, ylength))
 			return random_point # (123,789)
 		else: # zoom为0的情况，表示在不缩放的区域内选择一个点
@@ -297,22 +328,87 @@ class ImageMatchSet(object):
 		# print "x,y:", xc, yc
 		return xc, yc
 	
-	def show(self):
-		# 显示图像以及识别的图框
+	def show(self, para):
+		"""
+		显示图像以及识别的图框
+		para(Int): cv2.waitKey(0) 使opencv图像显示界面长期存在，其余数字表示显示多少秒
+		"""
 		cv2.imshow("DC detected screen", self.screenshots[-1])
 		# cv2.destroyAllWindows()
-		#  cv2.waitKey(0) 使opencv图像显示界面长期存在
-		cv2.waitKey(1)
-		
-		
+		#  cv2.waitKey(0)
+		cv2.waitKey(para)
+	
+	# 循环等待，直到匹配成功才退出
+	def whileset(self, image, a=4, b=6):
+		finish = False
+		count = 0
+		while not finish:
+			sleeptime(a, b)
+			whileset_res = self.image_match(image)[0]
+			if whileset_res == 1:
+				finish = True
+			else:
+				count += 1
+				print "whileset not complete {} times".format(count)
+		print "Image: '{}' matched!".format(image)
+	
+	def backtopage(self, flag):
+		"""
+		返回到有标志物（参照）的界面
+		flag(String\Unicode): 图片地址
+		:return:
+		"""
+		back()
+		sleep(1)
+		flag_res = self.image_match(flag)[0]
+		if flag_res == 0:
+			self.backtopage(flag)
+		else:
+			print "Back to flag: '{}' page successed!".format(flag)
+			
+""">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"""
+""">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"""
+""">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"""
+""">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"""
+""">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"""
+""">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"""
+ims = ImageMatchSet()
+
+
+def cancel_selection():
+	"""
+	1.取消所有筛选条件，然后停留在筛选界面
+	2.进入排序界面，自动选择第二种降序排列
+	"""
+	humanbeing_click(lt_gl.filterX, lt_gl.filterY)
+	sleeptime(0.76, 1.1)
+	selected = True
+	while selected:
+		res = ims.image_match(image_g.selcted, 0.85)
+		if res[0] == 1:
+			humanbeing_click_point(ims.point(0.1, 70), 0.1, 0.25)
+		else:  # 全部取消完成
+			selected = False
+			print "dc_general.py: cancel all selection!"
+	
+	"""
+	# # 进行排序
+	# dc.humanbeing_click(lt_gl.sortX, lt_gl.sortY)
+	# dc.sleep(0.5)
+	# dc.humanbeing_click(lt_gl.sort1X, lt_gl.sort1Y,0.1,0.2)
+	# dc.humanbeing_click(lt_gl.sort2X, lt_gl.sort2Y,0.06, 0.12)
+	"""
+
+	
+	
 if __name__ == '__main__':
 	os.chdir("../adb")
-	# os.system("adb connect 127.0.0.1:21503")
+	os.system("adb connect 127.0.0.1:21505")
 	mt = ImageMatchSet(cv2.TM_CCOEFF_NORMED)
 	mt.image_match(ur"G:\MoveOn\boomboost\image\farm\select.png",0.8)
 	# point = mt.point(0.25)
 	# humanbeing_click_point(point)
-	mt.show()
+	mt.show(4)
 	sleeptime(50,60)
 
 	

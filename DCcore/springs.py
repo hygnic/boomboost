@@ -40,7 +40,7 @@ def mian():
 		
 def replace_towels(housex, housey):
 	# 点击温泉是哪一楼
-	# humanbeing_click(lt.spring2fX, lt.spring2fY) # 点击浴场的位置
+	# humanbeing_click(lt_sp.spring2fX, lt_sp.spring2fY) # 点击浴场的位置
 	time.sleep(3)
 	humanbeing_click(housex, housey)  # 点击浴场的位置
 	time.sleep(5)

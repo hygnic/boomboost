@@ -18,6 +18,9 @@ main_dir = os.path.dirname(conf_dir) # G:\MoveOn\boomboost
 main_dir = os.path.abspath(main_dir) # G:\MoveOn\boomboost
 image_f = os.path.join(main_dir,"image")
 
+general_dir = os.path.join(image_f,"general")
+agate2coin_dir = os.path.join(image_f,"agate2coin")
+
 class Path(object):
 	def __init__(self):
 		
@@ -33,7 +36,37 @@ class Path(object):
 		# 一些奇怪事情的比较模板，比如询问是否退出，网络中断等
 		self.quit= os.path.join(image_f,u"quit.png")
 		self.network_error= os.path.join(image_f,u"network_error_clip.png")
+
+class ImageDCGeneral(object):
+	def __init__(self):
+		# 筛选界面的选中小按钮
+		self.selcted = os.path.join(general_dir, "selected.png")
+		# 角色选择界面的标志物(参照),用于程序的返回
+		self.flag_selcte_interface = os.path.join(general_dir, "flag_selcte_interface.png")
+
+# 将玛瑙转化为金币的一些图片
+class ImageAgateToCoin(ImageDCGeneral):
+	def __init__(self):
+		ImageDCGeneral.__init__(self)
+		# 提升好感度的按键
+		self.improve_impression = os.path.join(agate2coin_dir,
+												"improve_impression.png")
+		# 空的好感进度条 empty prograssbar
+		self.check_impression = os.path.join(agate2coin_dir, "point_zero.png")
 		
+		# screencapture of "S class" mark
+		self.s_class = os.path.join(agate2coin_dir, "S_class.png")
+		
+		# 点击child的s class 提升后有一个进化动画，结束后出现该按键
+		self.improve_finish = os.path.join(agate2coin_dir, "finish.png")
+		
+		# 角色列表从左到右 结束 角色右边显示全黑
+		self.none_charater = os.path.join(agate2coin_dir, "none_charater.png")
+		
+		
+		
+		
+
 if __name__ == '__main__':
 	aa = Path()
 	print main_dir
