@@ -92,7 +92,6 @@ def humanbeing_click_point(click_point, a=0.2, b =0.6):
 	os.system(click)
 
 
-
 def check_screen(match_method=cv2.TM_CCOEFF_NORMED):
 	# 预处理，监测当前页面是否存在异常（是否退出界面和重连界面）
 	screen_image = cv2.imread("../image/screen_img.png", 0)
@@ -110,9 +109,6 @@ def check_screen(match_method=cv2.TM_CCOEFF_NORMED):
 		humanbeing_click(lt_sp.reconnectX, lt_sp.reconnectY)
 		lg.debug(u"重连网络")
 		sleep(5)
-
-
-
 
 
 def image_match(temp, match_value, match_method=cv2.TM_CCOEFF_NORMED):
@@ -189,7 +185,7 @@ class ImageMatchSet(object):
 			self.__screenshots = self.__screenshots[-4:]
 		return self.__screenshots
 	
-	def capture(self):
+	def capture_adb(self):
 		"""
 		使用adb内置截屏功能,将截屏图片加入self.__screenshots中
 		:return: 返回最新截屏的cv2读取数据
@@ -208,7 +204,7 @@ class ImageMatchSet(object):
 	def back_to_main_menu(self):
 		# return DC main menu(ongoing)
 		sleeptime(1, 1.5)
-		cv2value1, cv2real_value = image_match(self.pf.mian_flags, 0.8)
+		cv2value1, cv2real_value = image_match(self.image_pf.mian_flags, 0.8)
 		if 1 not in cv2value1:
 			print cv2real_value
 			back()
@@ -226,7 +222,7 @@ class ImageMatchSet(object):
 		"""
 		# if not assign screen_image, function self.capture() assign to screen_image
 		if screen_image is None:
-			screen_image = self.capture()
+			screen_image = self.capture_adb()
 		if isinstance(temp, list):
 			cv2images = []
 			cv2match_result = []
@@ -338,8 +334,11 @@ class ImageMatchSet(object):
 		#  cv2.waitKey(0)
 		cv2.waitKey(para)
 	
-	# 循环等待，直到匹配成功才退出
 	def whileset(self, image, a=4, b=6):
+		"""循环等待，直到最新的屏幕内容与图片匹配成功，退出
+		image(Int/Unicode): 需要匹配的图片的地址
+		a b(Second): 等待时间（sec）
+		"""
 		finish = False
 		count = 0
 		while not finish:
@@ -352,19 +351,24 @@ class ImageMatchSet(object):
 				print "whileset not complete {} times".format(count)
 		print "Image: '{}' matched!".format(image)
 	
-	def backtopage(self, flag):
+	def backtopage(self, flag, a=1.4, b=1.6):
 		"""
 		返回到有标志物（参照）的界面
-		flag(String\Unicode): 图片地址
-		:return:
+		flag(String\Unicode): 标志物（参照）图片地址
 		"""
 		back()
-		sleep(1)
+		sleeptime(a, b)
 		flag_res = self.image_match(flag)[0]
 		if flag_res == 0:
 			self.backtopage(flag)
 		else:
 			print "Back to flag: '{}' page successed!".format(flag)
+			
+			
+			
+			
+			
+			
 			
 """>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"""
 """>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"""

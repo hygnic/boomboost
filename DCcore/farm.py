@@ -41,7 +41,7 @@ def check_level():
 	"""levelmax  检查是否满级，如果满级，程序停止运行"""
 	# 截取的 20 中的 罗马数字 0
 	levelmax = "G:/MoveOn/boomboost/image/farm/levelmax.png"
-	levelmax_screen = ims.capture()
+	levelmax_screen = ims.capture_adb()
 	levelmax_screen = levelmax_screen[
 					  lt.croppedY[0]:lt.croppedY[1],
 					  lt.croppedX[0]:lt.croppedX[1]

@@ -45,7 +45,7 @@ def get_money():
 	dc.humanbeing_click_point(ims.point(0.3))
 	dc.sleep(0.6)
 	# 检查好感进度条，留下为0的
-	cropped = ims.capture()
+	cropped = ims.capture_adb()
 	cropped = cropped[
 			  lt_a2c.croppedY[0]:lt_a2c.croppedY[1],
 			  lt_a2c.croppedX[0]:lt_a2c.croppedX[1]
@@ -96,7 +96,7 @@ def improve_click():
 def next_chara():
 	"""向右点击，获取下一位child"""
 	# 将屏幕中角色选择区域右侧截取
-	next_chara_cropped = ims.capture()
+	next_chara_cropped = ims.capture_adb()
 	next_chara_cropped = next_chara_cropped[
 						 lt_gl.cropped_rightsideY[0]:lt_gl.cropped_rightsideY[1],
 						 lt_gl.cropped_rightsideX[0]:lt_gl.cropped_rightsideX[1]
