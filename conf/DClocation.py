@@ -117,14 +117,18 @@ class Farm(object):
 		self.leftsideX = (264, 320)
 		self.leftsideY = (539, 683)
 		
-		# 循环战斗按钮
+		# 设置连续战斗
+		self.battle_styleX = (895, 996)
+		self.battle_styleY = (203, 238)
+		
+		# 选择重新战斗按钮、（另外两个是暂停和下一场）
 		self.loopX = (302, 319)
 		self.loopY = (284, 299)
 		
 		# 裁剪等级显示区域
 		# 裁剪结果示例 数字 1 "G:\MoveOn\boomboost\image\示例文件\1.png"
-		self.croppedX = (401,405)
-		self.croppedY = (600,621)
+		self.croppedX = (393,407)
+		self.croppedY = (599,622)
 		
 		
 class General(object):
@@ -138,8 +142,8 @@ class General(object):
 		self.filterY = (360, 388)
 		
 		# 裁剪 勾选影藏选项 （右上角）
-		self.auto_hideX = (630, 648)
-		self.auto_hideY = (79, 98)
+		self.auto_hideX = (631, 648)
+		self.auto_hideY = (81, 97)
 		
 		# 排序按钮 （靠上）
 		self.sortX = (503, 565)

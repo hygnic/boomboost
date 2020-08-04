@@ -114,7 +114,7 @@ if __name__ == '__main__':
 	# TODO 存在的问题 在升级一个橘色后，角色顺序会变
 	
 	os.chdir("../adb")
-	# # os.system("adb connect 127.0.0.1:21503")
+	# os.system("adb connect 127.0.0.1:21503")
 	# initil() # TODO 修改排序
 	dc.sleep(0.5)
 	while True:
