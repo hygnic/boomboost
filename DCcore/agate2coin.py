@@ -32,6 +32,7 @@ def initil():
 	# 选择一星和两星的角色 # TODO 还要取消自动隐藏选项
 	dc.humanbeing_click(lt_gl.star1X, lt_gl.star1Y)
 	dc.humanbeing_click(lt_gl.star2X, lt_gl.star2Y)
+	dc.auto_hide(False)
 	dc.back()
 	dc.sleep(0.5)
 	dc.screenswipe((113, 253), (498, 650), (600, 740), (503, 640),)  # swipe screen
@@ -41,7 +42,7 @@ def get_money():
 	dc.humanbeing_click(lt_a2c.open_attributeX, lt_a2c.open_attributeY)
 	dc.sleep(1.2)
 	# 点击进入好感度提升界面
-	res = ims.image_match(image.improve_impression)
+	res = ims.image_match(image.improve_impression, 0.9)
 	dc.humanbeing_click_point(ims.point(0.3))
 	dc.sleep(0.6)
 	# 检查好感进度条，留下为0的
@@ -107,14 +108,14 @@ def next_chara():
 		sys.exit(0)
 	else:
 		# 向右点击，获取下一位child
-		dc.humanbeing_click(lt_gl.rightsideX, lt_gl.rightsideY)
+		dc.humanbeing_click(lt_gl.rightsideX, lt_gl.rightsideY,a=0, b =0.1)
 		
 	
 if __name__ == '__main__':
 	# TODO 存在的问题 在升级一个橘色后，角色顺序会变
 	
 	os.chdir("../adb")
-	# os.system("adb connect 127.0.0.1:21503")
+	os.system("adb connect 127.0.0.1:21503")
 	# initil() # TODO 修改排序
 	dc.sleep(0.5)
 	while True:

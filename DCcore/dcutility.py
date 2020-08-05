@@ -13,6 +13,7 @@ Usage:
 from time import sleep
 import random
 import os
+import sys
 import cv2
 import logging as lg  # TODO 设置其他颜色的日志输出未果
 from conf.DClocation import General
@@ -358,7 +359,7 @@ class ImageMatchSet(object):
 		"""
 		back()
 		sleeptime(a, b)
-		flag_res = self.image_match(flag)[0]
+		flag_res = self.image_match(flag, 0.89)[0]
 		if flag_res == 0:
 			self.backtopage(flag)
 		else:
@@ -403,7 +404,23 @@ def cancel_selection():
 	# dc.humanbeing_click(lt_gl.sort2X, lt_gl.sort2Y,0.06, 0.12)
 	"""
 
-	
+def auto_hide(flag):
+	"""在队伍配置界面，设置是否自动隐藏满级角色
+	flag(Boolean): Ture: auto hide, Fales: always show"""
+	ensure = image_g.auto_hide
+	screen = ims.capture_adb()
+	screen = screen[
+					  lt_gl.auto_hideY[0]:lt_gl.auto_hideY[1],
+					  lt_gl.auto_hideX[0]:lt_gl.auto_hideX[1]
+					  ]
+	res = ims.image_match(ensure, threshold=0.9,screen_image=screen)
+	if flag: # 需要隐藏
+		if res[0] == 0:
+			humanbeing_click(lt_gl.auto_hideX, lt_gl.auto_hideY)
+	else: # 不需要隐藏
+		if res[0] == 1:
+			humanbeing_click(lt_gl.auto_hideX, lt_gl.auto_hideY)
+
 	
 if __name__ == '__main__':
 	os.chdir("../adb")

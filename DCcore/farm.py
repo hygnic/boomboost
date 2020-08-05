@@ -19,7 +19,7 @@ from dcutility import humanbeing_click, humanbeing_click_point, sleeptime
 from dcutility import screenswipe, cancel_selection
 from dcutility import back
 from dcutility import ImageMatchSet
-
+import dcutility as dc
 
 lt = DClocation.Farm()
 lt_gl = DClocation.General()
@@ -35,16 +35,7 @@ def initil():
 	time.sleep(0.6)
 	# 选择两星的角色
 	humanbeing_click(lt_gl.star2X, lt_gl.star2Y)
-	ensure = image.auto_hide
-	screen = ims.capture_adb()
-	screen = screen[
-					  lt_gl.auto_hideY[0]:lt_gl.auto_hideY[1],
-					  lt_gl.auto_hideX[0]:lt_gl.auto_hideX[1]
-					  ]
-	res = ims.image_match(ensure, threshold=0.9,screen_image=screen)
-	print "ookook",res[1]
-	if res[0] == 0:
-		humanbeing_click(lt_gl.auto_hideX, lt_gl.auto_hideY)
+	dc.auto_hide(True)
 	back()
 	
 def check_level():
@@ -80,13 +71,13 @@ def team_conf(vacancy):
 	flag_res = ims.image_match(flag1)
 	if flag_res[0]==1: # 重复角色
 		repeat = image.repeat
-		# screenswipe((775, 853), (511, 672),(75, 853), (120, 672))  # swipe screen
+		screenswipe((775, 853), (511, 672),(75, 853), (120, 672))  # swipe screen
 		time.sleep(1.5)
 		
 		# loop add child
 		for i in xrange(vacancy):
 			# check_level()
-			#
+			# 判断后续是否还有角色
 			next_chara_cropped = ims.capture_adb()
 			next_chara_cropped = next_chara_cropped[
 								 lt_gl.cropped_rightsideY[0]:

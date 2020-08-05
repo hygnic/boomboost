@@ -109,14 +109,9 @@ class Farm(object):
 			[self.first_poltX, self.first_poltY]
 						 ]
 		
-		
 		# 重复角色 返回
 		self.confirm_backX = (442, 555)
 		self.confirm_backY = (499, 537)
-		
-		# selcet leftside child 遇到重复的天子，点击以选择左边的天子
-		self.leftsideX = (264, 320)
-		self.leftsideY = (539, 683)
 		
 		# 设置连续战斗
 		self.battle_styleX = (895, 996)
@@ -166,6 +161,10 @@ class General(object):
 		self.star2X = (450, 552)
 		self.star2Y = (495, 523)
 		
+		# selcet leftside child 遇到重复的天子，点击以选择左边的天子
+		self.leftsideX = (264, 320)
+		self.leftsideY = (539, 683)
+		
 		# 点击角色右边
 		self.rightsideX = (420, 485)
 		self.rightsideY = (527, 691)
@@ -178,10 +177,6 @@ class General(object):
 class AgateToCoin(object):
 	def __init__(self):
 		# 查看角色属性的按键
-		self.open_attributeX = (290, 421)
-		self.open_attributeY = (702, 736)
-		
-		# 打开提升友好度的按键
 		self.open_attributeX = (290, 421)
 		self.open_attributeY = (702, 736)
 		
