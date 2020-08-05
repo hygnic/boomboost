@@ -75,6 +75,7 @@ class Farm(object):
 		self.fram()
 		
 	def fram(self):
+		# 上方的队伍编辑按钮
 		self.fselectX = (396, 602)
 		self.fselectY = (173, 200)
 		

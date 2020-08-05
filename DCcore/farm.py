@@ -78,8 +78,7 @@ def team_conf(vacancy):
 	time.sleep(1)
 	flag1 = image.flag_selcte_interface
 	flag_res = ims.image_match(flag1)
-	if flag_res[0]==1:
-		# 重复角色
+	if flag_res[0]==1: # 重复角色
 		repeat = image.repeat
 		# screenswipe((775, 853), (511, 672),(75, 853), (120, 672))  # swipe screen
 		time.sleep(1.5)
@@ -165,6 +164,9 @@ if __name__ == '__main__':
 	os.chdir("../adb")
 	# os.system("adb connect 127.0.0.1:21503")
 	while True:
+		# 更换队伍角色
 		team_conf(4)
+		# 连续战斗设置
 		start()
+		# 阻塞等待战斗结束
 		fighting(160)
