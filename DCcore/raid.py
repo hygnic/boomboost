@@ -18,6 +18,9 @@ from conf. DClocation import AgateToCoin
 from conf.pathfile import ImageAgateToCoin
 
 
+ims = dc.ImageMatchSet()
+
+
 def enter_raid():
 	"""进入raid界面"""
 	dc.humanbeing_click(1,2,0.1, 0.3)
@@ -37,5 +40,18 @@ def refresh():
 def select_boss_battel():
 	"""选择合适的副本"""
 	
+	
+dc.screenswipe()
+
+
+if __name__ == '__main__':
+	# 1080X2340
+	os.chdir("../adb")
+	# os.system("adb connect 127.0.0.1:21503")
+	# ims.capture_adb()
+	enter_raid()
+	sort()
+	while True:
+		pass
 	
 	
