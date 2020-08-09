@@ -198,4 +198,34 @@ class AgateToCoin(object):
 		self.rewardY = (180, 209)
 		
 		
+class Raid(General):
+	def __init__(self):
+		General.__init__(self)
 		
+		# lt_raid 刷新键
+		self.raid_refreshX = (254, 336)
+		self.raid_refreshY = (313, 339)
+		
+		# raid筛选按键
+		self.raid_filterX = (661, 742)
+		self.raid_filterY = (313, 339)
+		
+		"""
+		raid筛选选项
+		从左到右 依次为
+			第一排	水准仪？ HP 时间 参与数
+			第二排	胜利 败北 未参加 临近收尾
+		"""
+		# 第一排第二个 HP
+		self.raid_12X = (403, 490)
+		self.raid_12Y = (758, 789)
+		# 第二排第三个 未参加
+		self.raid_23X = (519, 534)
+		self.raid_23Y = (857, 872)
+		# 确认键
+		self.filter_OKX = (451, 538)
+		self.filter_OKY = (657, 679)
+		
+		# The comfirm button of buy tickets
+		self.buy_ticketX = (544, 657)
+		self.buy_ticketY = (503, 532)

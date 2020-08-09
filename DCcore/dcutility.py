@@ -337,8 +337,8 @@ class ImageMatchSet(object):
 	
 	def whileset(self, image, a=4, b=6):
 		"""循环等待，直到最新的屏幕内容与图片匹配成功，退出
-		image(Int/Unicode): 需要匹配的图片的地址
-		a b(Second): 等待时间（sec）
+		image(Str/Unicode): 需要匹配的图片的地址
+		a b(Second): 等待时间的范围（sec）
 		"""
 		finish = False
 		count = 0

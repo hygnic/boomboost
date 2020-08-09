@@ -98,10 +98,11 @@ def team_conf(vacancy):
 				repeat_res = ims.image_match(repeat)
 				if repeat_res[0] == 1:  # 出现重复角色的问题
 					# click back button
-					humanbeing_click(lt.confirm_backX, lt.confirm_backY)
+					back()
+					# humanbeing_click(lt.confirm_backX, lt.confirm_backY)
 					# time.sleep(0.2)
 					# click RIGHTSIDE child
-					humanbeing_click(lt_gl.rightsideX, lt_gl.rightsideY)
+					humanbeing_click(lt_gl.leftsideX, lt_gl.leftsideY)
 					time.sleep(0.2)
 				else:
 					good =True
@@ -153,7 +154,7 @@ def fighting(second):
 
 if __name__ == '__main__':
 	os.chdir("../adb")
-	# os.system("adb connect 127.0.0.1:21503")
+	os.system("adb connect 127.0.0.1:21503")
 	while True:
 		# 更换队伍角色
 		team_conf(4)

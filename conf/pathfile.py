@@ -17,13 +17,14 @@ conf_dir = os.path.dirname(this_adress) # G:\MoveOn\boomboost\conf
 main_dir = os.path.dirname(conf_dir) # G:\MoveOn\boomboost
 main_dir = os.path.abspath(main_dir) # G:\MoveOn\boomboost
 
-# image_f = os.path.join(main_dir,"image")
+image_f = os.path.join(main_dir,"image")
 # 中文版
-image_f = os.path.join(main_dir,"image/image_CN")
+# image_f = os.path.join(main_dir,"image/image_CN")
 
 general_dir = os.path.join(image_f,"general")
 agate2coin_dir = os.path.join(image_f,"agate2coin")
 farm = os.path.join(image_f,"farm")
+raid = os.path.join(image_f,"raid")
 
 class Path(object):
 	def __init__(self):
@@ -86,6 +87,16 @@ class ImageFarm(ImageDCGeneral):
 		# 战斗结束
 		self.battle_result = os.path.join(farm, "battle_result.png")
 
+
+class Imageraid(ImageDCGeneral):
+	def __init__(self):
+		ImageDCGeneral.__init__(self)
+		# boomboost\image\lt_raid
+		self.raid_flag = os.path.join(raid, "raid_flag.png")
+		self.level40 = os.path.join(raid, "level40.png")
+		self.raid_battle = os.path.join(raid, "raid_battle.png")
+		self.buy_ticket = os.path.join(raid, "buy_ticket.png")
+		self.raid_complete = os.path.join(raid, "raid_complete.png")
 
 
 if __name__ == '__main__':
