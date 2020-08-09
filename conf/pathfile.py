@@ -96,6 +96,7 @@ class Imageraid(ImageDCGeneral):
 		self.level40 = os.path.join(raid, "level40.png")
 		self.raid_battle = os.path.join(raid, "raid_battle.png")
 		self.buy_ticket = os.path.join(raid, "buy_ticket.png")
+		self.no_ticket = os.path.join(raid, "no_ticket.png")
 		self.raid_complete = os.path.join(raid, "raid_complete.png")
 
 

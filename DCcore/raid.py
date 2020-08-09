@@ -74,12 +74,15 @@ def buy_ticket(point):
 	auto buy tickets while there is showing no ticket
 	point(Object) such as: ims.point(zoom=0)
 	"""
-	dc.sleep(4)
-	res = ims.image_match(imageraid.buy_ticket)
+	dc.sleep(2)
+	res = ims.image_match(imageraid.no_ticket)
 	if res[0] ==1:
-		print "<<Buying Tickets!>>"
+		dc.back()
+		# button of buy tickets
+		dc.humanbeing_click(lt_raid.buy_ticket_buttonX, lt_raid.buy_ticket_buttonY)
 		# The comfirm button of buy tickets
 		dc.humanbeing_click(lt_raid.buy_ticketX, lt_raid.buy_ticketY)
+		print "<<Buying Tickets!>>"
 		dc.back(0.8,1)
 		# need click battle button after buy tickets
 		dc.humanbeing_click_point(point)
@@ -96,7 +99,7 @@ def raid_detect(time):
 if __name__ == '__main__':
 	# 1080X2340
 	os.chdir("../adb")
-	# os.system("adb connect 127.0.0.1:21503")
+	os.system("adb connect 127.0.0.1:21503")
 	# ims.capture_adb()
 	
 	while True:

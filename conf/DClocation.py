@@ -226,6 +226,10 @@ class Raid(General):
 		self.filter_OKX = (451, 538)
 		self.filter_OKY = (657, 679)
 		
+		# buy_ticket_button
+		self.buy_ticket_buttonX = (977, 983)
+		self.buy_ticket_buttonY = (403, 411)
+		
 		# The comfirm button of buy tickets
 		self.buy_ticketX = (544, 657)
 		self.buy_ticketY = (503, 532)
