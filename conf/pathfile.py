@@ -31,8 +31,8 @@ farm = os.path.join(image_f,"farm")
 raid = os.path.join(image_f,"raid_phone")
 	适配手机 1080X2340分辨率
 """
-# raid = os.path.join(image_f,"raid")
-raid = os.path.join(image_f,"raid_phone")
+raid = os.path.join(image_f,"raid")
+# raid = os.path.join(image_f,"raid_phone")
 
 
 class Path(object):
