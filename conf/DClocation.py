@@ -233,3 +233,40 @@ class Raid(General):
 		# The comfirm button of buy tickets
 		self.buy_ticketX = (544, 657)
 		self.buy_ticketY = (503, 532)
+
+
+class RaidPhone1080X2340(General):
+	def __init__(self):
+		General.__init__(self)
+		
+		# lt_raid 刷新键
+		self.raid_refreshX = (54, 212)
+		self.raid_refreshY = (718, 757)
+		
+		# raid筛选按键
+		self.raid_filterX = (864, 1030)
+		self.raid_filterY = (718, 757)
+		
+		"""
+		raid筛选选项
+		从左到右 依次为
+			第一排	水准仪？ HP 时间 参与数
+			第二排	胜利 败北 未参加 临近收尾
+		"""
+		# 第一排第二个 HP
+		self.raid_12X = (338, 520)
+		self.raid_12Y = (2058, 2119)
+		# 第二排第三个 未参加
+		self.raid_23X = (578, 608)
+		self.raid_23Y = (2254, 2284)
+		# 确认键
+		self.filter_OKX = (427, 650)
+		self.filter_OKY = (1848, 1919)
+		
+		# buy_ticket_button
+		self.buy_ticket_buttonX = (1032, 1048)
+		self.buy_ticket_buttonY = (889, 910)
+		
+		# The comfirm button of buy tickets
+		self.buy_ticketX = (637, 842)
+		self.buy_ticketY = (1319, 1376)

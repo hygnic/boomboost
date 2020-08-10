@@ -16,14 +16,9 @@ import os
 import sys
 import logging as lg
 import dcutility as dc
-from conf. DClocation import General
-from conf. DClocation import Raid
+from conf. DClocation import Raid, RaidPhone1080X2340
 from conf.pathfile import Imageraid
 
-
-lt_raid = Raid()
-ims = dc.ImageMatchSet()
-imageraid = Imageraid()
 
 def enter_raid():
 	"""进入raid界面"""
@@ -43,9 +38,9 @@ def filter_sort():
 	# 点击 未参加
 	dc.humanbeing_click(lt_raid.raid_23X, lt_raid.raid_23Y, 0.3)
 	# 点击 按 HP 排序
-	dc.humanbeing_click(lt_raid.raid_12X, lt_raid.raid_12Y, 0.3)
+	dc.humanbeing_click(lt_raid.raid_12X, lt_raid.raid_12Y, 0.4)
 	# 点击确认键以返回
-	dc.humanbeing_click(lt_raid.filter_OKX, lt_raid.filter_OKY, 0.3)
+	dc.humanbeing_click(lt_raid.filter_OKX, lt_raid.filter_OKY, 0.7)
 
 def refresh():
 	"""点击刷新"""
@@ -93,16 +88,23 @@ def buy_ticket(point):
 def raid_detect(time):
 	"""Detecting the boss raid battle whether finished"""
 	dc.sleep(time)
-	ims.whileset(imageraid.raid_complete)
+	ims.whileset([imageraid.raid_complete, imageraid.raid_complete2])
 	res = ims.image_match(imageraid.raid_complete)
 	dc.back()
 	dc.sleep(4)
 	
 	
 if __name__ == '__main__':
+	
+	# lt_raid = Raid()
+	# 适配phone 1080X2340
+	lt_raid = RaidPhone1080X2340()
+	ims = dc.ImageMatchSet()
+	imageraid = Imageraid()
+	
 	# 1080X2340
 	os.chdir("../adb")
-	os.system("adb connect 127.0.0.1:21503")
+	# os.system("adb connect 127.0.0.1:21503")
 	# ims.capture_adb()
 	
 	while True:

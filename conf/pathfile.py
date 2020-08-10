@@ -18,13 +18,22 @@ main_dir = os.path.dirname(conf_dir) # G:\MoveOn\boomboost
 main_dir = os.path.abspath(main_dir) # G:\MoveOn\boomboost
 
 image_f = os.path.join(main_dir,"image")
-# 中文版
+"""中文版
+目前中文版只适配了自动挖矿
+"""
 # image_f = os.path.join(main_dir,"image/image_CN")
 
 general_dir = os.path.join(image_f,"general")
 agate2coin_dir = os.path.join(image_f,"agate2coin")
 farm = os.path.join(image_f,"farm")
-raid = os.path.join(image_f,"raid")
+
+"""图片配置
+raid = os.path.join(image_f,"raid_phone")
+	适配手机 1080X2340分辨率
+"""
+# raid = os.path.join(image_f,"raid")
+raid = os.path.join(image_f,"raid_phone")
+
 
 class Path(object):
 	def __init__(self):
@@ -96,7 +105,10 @@ class Imageraid(ImageDCGeneral):
 		self.level40 = os.path.join(raid, "level40.png")
 		self.raid_battle = os.path.join(raid, "raid_battle.png")
 		self.no_ticket = os.path.join(raid, "no_ticket.png")
+		# boss 死
 		self.raid_complete = os.path.join(raid, "raid_complete.png")
+		# boss 没有死
+		self.raid_complete2 = os.path.join(raid, "raid_complete2.png")
 
 
 if __name__ == '__main__':

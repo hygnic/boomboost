@@ -224,7 +224,7 @@ class ImageMatchSet(object):
 		# if not assign screen_image, function self.capture() assign to screen_image
 		if screen_image is None:
 			screen_image = self.capture_adb()
-		if isinstance(temp, list):
+		if isinstance(temp, list): # 这个基本没有使用，没有更新
 			cv2images = []
 			cv2match_result = []
 			for i in temp:
@@ -337,21 +337,39 @@ class ImageMatchSet(object):
 	
 	def whileset(self, image, a=4, b=6):
 		"""循环等待，直到最新的屏幕内容与图片匹配成功，退出
-		image(Str/Unicode): 需要匹配的图片的地址
+		image(Str/Unicode/List): 需要匹配的图片的地址，也可以是列表
 		a b(Second): 等待时间的范围（sec）
 		"""
-		finish = False
-		count = 0
-		while not finish:
-			sleeptime(a, b)
-			whileset_res = self.image_match(image)[0]
-			if whileset_res == 1:
-				finish = True
-			else:
-				count += 1
-				print "whileset not complete {} times".format(count)
-		print "Image: '{}' matched!".format(image)
-	
+		if isinstance(image, list):
+			finish = False
+			count = 0
+			while not finish:
+				sleeptime(a, b)
+				for i in image:
+					whileset_res1 = self.image_match(i)[0]
+					# whileset_res2 = self.image_match(
+					# 	i, threshold=0.8, screen_image=self.__screenshots[-1])[0]
+					if whileset_res1 == 1:
+						finish = True
+						break
+					else:
+						count += 1
+						print "{} whileset not complete {} times".format(image,count)
+				print "Image: '{}' matched!".format(image)
+		
+		else: # 单个图片
+			finish = False
+			count = 0
+			while not finish:
+				sleeptime(a, b)
+				whileset_res = self.image_match(image)[0]
+				if whileset_res == 1:
+					finish = True
+				else:
+					count += 1
+					print "{} whileset not complete {} times".format(image,count)
+			print "Image: '{}' matched!".format(image)
+		
 	def backtopage(self, flag, a=1.4, b=1.6):
 		"""
 		返回到有标志物（参照）的界面
