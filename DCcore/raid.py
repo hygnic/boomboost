@@ -60,11 +60,13 @@ def select_boss_battle():
 		dc.humanbeing_click_point(battle_icon)
 		# auto buy tickets function
 		buy_ticket(battle_icon)
-		# check_done()
+		check_done()
 		
 def check_done():
 	"""在我们点击battle按键后，检测battle是否已经被别人完成"""
-	res = ims.image_match(imageraid, threshold=0.8, screen_image=ims.screenshots[-1])
+	dc.sleep(2)
+	res = ims.image_match(
+		imageraid.already_done, threshold=0.8, screen_image=ims.screenshots[-1])
 	if res[0] == 1:
 		dc.back(0.1, 0.2)
 		check_flag()
