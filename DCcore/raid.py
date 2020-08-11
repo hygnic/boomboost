@@ -20,18 +20,12 @@ from conf. DClocation import Raid, RaidPhone1080X2340
 from conf.pathfile import Imageraid
 
 
-def enter_raid():
-	"""进入raid界面"""
-	dc.humanbeing_click(1,2,0.1, 0.3)
-	pass
+def check_flag():
+	"""标志物检测"""
+	ims.whileset(imageraid.raid_flag)
 
 def filter_sort():
-	"""标志物检测和排序设置"""
-	
-	# 标志物检测
-	ims.whileset(imageraid.raid_flag)
-	# print imageraid.raid_flag
-	# ims.show(0)
+	"""排序设置"""
 	# 排序设置
 	# 点击过滤按键
 	dc.humanbeing_click(lt_raid.raid_filterX, lt_raid.raid_refreshY, 0.3)
@@ -43,12 +37,12 @@ def filter_sort():
 	dc.humanbeing_click(lt_raid.filter_OKX, lt_raid.filter_OKY, 0.7)
 
 def refresh():
-	"""点击刷新"""
+	"""点击右侧刷新按键"""
 	dc.sleeptime(5,6)
 	dc.humanbeing_click(lt_raid.raid_refreshX, lt_raid.raid_refreshY)
 	
 def select_boss_battle():
-	"""select level-40 boss to beat"""
+	"""main funtion: select level-40 boss to beat"""
 	# dc.sleep(1)
 	res = ims.image_match(imageraid.level40)
 	if res[0] == 0: # 不存在level40
@@ -66,11 +60,21 @@ def select_boss_battle():
 		dc.humanbeing_click_point(battle_icon)
 		# auto buy tickets function
 		buy_ticket(battle_icon)
+		check_done()
+		
+def check_done():
+	"""在我们点击battle按键后，检测battle是否已经被别人完成"""
+	res = ims.image_match(imageraid, threshold=0.8, screen_image=ims.screenshots[-1])
+	if res[0] == 1:
+		dc.back(0.1, 0.2)
+		check_flag()
+		select_boss_battle()
+	
 
 def buy_ticket(point):
 	"""
 	auto buy tickets while there is showing no ticket
-	point(Object) such as: ims.point(zoom=0)
+	point(Object) such as: ims.point(zoom=0) 那个红色的X按键
 	"""
 	dc.sleep(2)
 	res = ims.image_match(imageraid.no_ticket)
@@ -95,19 +99,22 @@ def raid_detect(time):
 	
 	
 if __name__ == '__main__':
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	# 适配 emulator
+	# lt_raid = Raid()
+	# imageraid = Imageraid("raid")
 	
-	lt_raid = Raid()
 	# 适配phone 1080X2340
-	# lt_raid = RaidPhone1080X2340()
-	ims = dc.ImageMatchSet()
-	imageraid = Imageraid()
+	lt_raid = RaidPhone1080X2340()
+	imageraid = Imageraid("raid_phone")
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	
-	# 1080X2340
 	os.chdir("../adb")
 	os.system("adb connect 127.0.0.1:21503")
 	# ims.capture_adb()
-	
+	ims = dc.ImageMatchSet()
 	while True:
+		check_flag()
 		filter_sort()
 		select_boss_battle()
 		raid_detect(265)

@@ -17,39 +17,39 @@ conf_dir = os.path.dirname(this_adress) # G:\MoveOn\boomboost\conf
 main_dir = os.path.dirname(conf_dir) # G:\MoveOn\boomboost
 main_dir = os.path.abspath(main_dir) # G:\MoveOn\boomboost
 
-image_f = os.path.join(main_dir,"image")
+image_dir = os.path.join(main_dir, "image")
 """中文版
 目前中文版只适配了自动挖矿
 """
 # image_f = os.path.join(main_dir,"image/image_CN")
 
-general_dir = os.path.join(image_f,"general")
-agate2coin_dir = os.path.join(image_f,"agate2coin")
-farm = os.path.join(image_f,"farm")
+general_dir = os.path.join(image_dir, "general")
+agate2coin_dir = os.path.join(image_dir, "agate2coin")
+farm = os.path.join(image_dir, "farm")
 
 """图片配置
 raid = os.path.join(image_f,"raid_phone")
 	适配手机 1080X2340分辨率
 """
-raid = os.path.join(image_f,"raid")
-# raid = os.path.join(image_f,"raid_phone")
+# raid = os.path.join(image_f,"raid")
+# raid = os.path.join(image_dir, "raid_phone")
 
 
 class Path(object):
 	def __init__(self):
 		
 		# DC主界面标志图模板的地址
-		main_menu1= os.path.join(image_f,u"main_menu_flag1.png")
-		main_menu2= os.path.join(image_f,u"main_menu_flag2.png")
-		main_menu4= os.path.join(image_f,u"main_menu_flag4.png")
+		main_menu1= os.path.join(image_dir, u"main_menu_flag1.png")
+		main_menu2= os.path.join(image_dir, u"main_menu_flag2.png")
+		main_menu4= os.path.join(image_dir, u"main_menu_flag4.png")
 		self.mian_flags = [main_menu1, main_menu2, main_menu4]
 		
 		self.dont_stop()
 		
 	def dont_stop(self):
 		# 一些奇怪事情的比较模板，比如询问是否退出，网络中断等
-		self.quit= os.path.join(image_f,u"quit.png")
-		self.network_error= os.path.join(image_f,u"network_error_clip.png")
+		self.quit= os.path.join(image_dir, u"quit.png")
+		self.network_error= os.path.join(image_dir, u"network_error_clip.png")
 
 class ImageDCGeneral(object):
 	def __init__(self):
@@ -98,12 +98,14 @@ class ImageFarm(ImageDCGeneral):
 
 
 class Imageraid(ImageDCGeneral):
-	def __init__(self):
+	def __init__(self, dirctory):
 		ImageDCGeneral.__init__(self)
+		raid = os.path.join(image_dir, dirctory)
 		# boomboost\image\lt_raid
 		self.raid_flag = os.path.join(raid, "raid_flag.png")
 		self.level40 = os.path.join(raid, "level40.png")
 		self.raid_battle = os.path.join(raid, "raid_battle.png")
+		self.already_done = os.path.join(raid, "already_done.png")
 		self.no_ticket = os.path.join(raid, "no_ticket.png")
 		# boss 死
 		self.raid_complete = os.path.join(raid, "raid_complete.png")
