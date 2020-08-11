@@ -60,7 +60,7 @@ def select_boss_battle():
 		dc.humanbeing_click_point(battle_icon)
 		# auto buy tickets function
 		buy_ticket(battle_icon)
-		check_done()
+		# check_done()
 		
 def check_done():
 	"""在我们点击battle按键后，检测battle是否已经被别人完成"""
@@ -101,12 +101,12 @@ def raid_detect(time):
 if __name__ == '__main__':
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	# 适配 emulator
-	# lt_raid = Raid()
-	# imageraid = Imageraid("raid")
+	lt_raid = Raid()
+	imageraid = Imageraid("raid")
 	
 	# 适配phone 1080X2340
-	lt_raid = RaidPhone1080X2340()
-	imageraid = Imageraid("raid_phone")
+	# lt_raid = RaidPhone1080X2340()
+	# imageraid = Imageraid("raid_phone")
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	
 	os.chdir("../adb")
