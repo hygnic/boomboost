@@ -83,11 +83,12 @@ def buy_ticket(point):
 	if res[0] ==1:
 		dc.back()
 		# button of buy tickets
-		dc.humanbeing_click(lt_raid.buy_ticket_buttonX, lt_raid.buy_ticket_buttonY)
+		dc.humanbeing_click(lt_raid.buy_ticket_buttonX, lt_raid.buy_ticket_buttonY, a=0.6, b =1.2)
 		# The comfirm button of buy tickets
+		dc.sleep(0.5)
 		dc.humanbeing_click(lt_raid.buy_ticketX, lt_raid.buy_ticketY)
 		print "<<Buying Tickets!>>"
-		dc.back(0.8,1)
+		dc.back(1,2)
 		# need click battle button after buy tickets
 		dc.humanbeing_click_point(point)
 		
@@ -103,12 +104,12 @@ def raid_detect(time):
 if __name__ == '__main__':
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	# 适配 emulator
-	lt_raid = Raid()
-	imageraid = Imageraid("raid")
+	# lt_raid = Raid()
+	# imageraid = Imageraid("raid")
 	
 	# 适配phone 1080X2340
-	# lt_raid = RaidPhone1080X2340()
-	# imageraid = Imageraid("raid_phone")
+	lt_raid = RaidPhone1080X2340()
+	imageraid = Imageraid("raid_phone")
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	
 	os.chdir("../adb")
