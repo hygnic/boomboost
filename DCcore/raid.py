@@ -104,12 +104,12 @@ def raid_detect(time):
 if __name__ == '__main__':
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	# 适配 emulator
-	# lt_raid = Raid()
-	# imageraid = Imageraid("raid")
+	lt_raid = Raid()
+	imageraid = Imageraid("raid")
 	
+	# lt_raid = RaidPhone1080X2340()
+	# imageraid = Imageraid("raid_phone")
 	# 适配phone 1080X2340
-	lt_raid = RaidPhone1080X2340()
-	imageraid = Imageraid("raid_phone")
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	
 	os.chdir("../adb")
