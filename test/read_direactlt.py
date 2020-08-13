@@ -54,6 +54,7 @@ def read21():
 @timewrap
 def read11():
     cmd_get = "adb shell screencap -p /sdcard/screen_img.png"
+    # cmd_get = "adb exec-out screencap -p > xxx.png"
     # cmd_get = "adb shell screencap -p | perl -pe 's/\x0D\x0A/\x0A/g' > screen.png"
     # cmd_get = "adb shell screencap -p | sed 's/^M$//' > screenshot.png"
     cmd_send = "adb pull sdcard/screen_img.png G:/MoveOn/boomboost/image"
