@@ -23,7 +23,7 @@ image_dir = os.path.join(main_dir, "image")
 """
 # image_f = os.path.join(main_dir,"image/image_CN")
 
-general_dir = os.path.join(image_dir, "general")
+
 agate2coin_dir = os.path.join(image_dir, "agate2coin")
 farm = os.path.join(image_dir, "farm")
 
@@ -52,7 +52,8 @@ class Path(object):
 		self.network_error= os.path.join(image_dir, u"network_error_clip.png")
 
 class ImageDCGeneral(object):
-	def __init__(self):
+	def __init__(self, dirctory= "general"):
+		general_dir = os.path.join(image_dir, dirctory)
 		# 筛选界面的选中小按钮
 		self.selcted = os.path.join(general_dir, "selected.png")
 		# 角色选择界面的标志物(参照),用于程序的返回
@@ -61,6 +62,9 @@ class ImageDCGeneral(object):
 		self.auto_hide = os.path.join(general_dir, "exclude_max_level.png")
 		# 角色列表从左到右 结束 角色右边显示全黑
 		self.none_charater = os.path.join(general_dir, "none_charater.png")
+		
+		# 主界面标志物 退出提示
+		self.quit = os.path.join(general_dir, "quit.png")
 
 
 # 将玛瑙转化为金币的一些图片
@@ -97,7 +101,12 @@ class ImageFarm(ImageDCGeneral):
 		self.battle_result = os.path.join(farm, "battle_result.png")
 
 
-class Imageraid(ImageDCGeneral):
+class ImageRaid(ImageDCGeneral):
+	
+	# 如果 ImageDCGeneral 要传参
+	# def __init__(self, dirctory, d2):
+	# 	ImageDCGeneral.__init__(self, d2)
+	
 	def __init__(self, dirctory):
 		ImageDCGeneral.__init__(self)
 		raid = os.path.join(image_dir, dirctory)
@@ -111,6 +120,18 @@ class Imageraid(ImageDCGeneral):
 		self.raid_complete = os.path.join(raid, "raid_complete.png")
 		# boss 没有死
 		self.raid_complete2 = os.path.join(raid, "raid_complete2.png")
+
+
+class ImageDaily(ImageDCGeneral):
+	def __init__(self, dirctory):
+		"""日常任务"""
+		ImageDCGeneral.__init__(self)
+		self.daily = os.path.join(image_dir, dirctory)
+		self.daily_ug()
+		
+	def daily_ug(self):
+		# 地铁 ug
+		self.image_ug = os.path.join(self.daily, "ug.png")
 
 
 if __name__ == '__main__':

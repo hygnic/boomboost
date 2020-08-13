@@ -131,7 +131,14 @@ class General(object):
 	"""通常设置的常见按键的位置 """
 	def __init__(self):
 		self.charater_interface()
+		self.yes_or_no()
+		self.home_page()
 		
+	def yes_or_no(self):
+		# No （中间 左）
+		self.noX = (350, 447)
+		self.noY = (493, 517)
+	
 	def charater_interface(self):
 		# 进入筛选按钮 （中间靠右黑色）
 		self.filterX = (667, 749)
@@ -173,6 +180,10 @@ class General(object):
 		self.cropped_rightsideX = (432, 632)
 		self.cropped_rightsideY = (429, 708)
 		
+	def home_page(self):
+		# 夜世界
+		self.nightworldX = (904, 993)
+		self.nightworldY = (700, 779)
 		
 class AgateToCoin(object):
 	def __init__(self):
@@ -234,6 +245,18 @@ class Raid(General):
 		self.buy_ticketX = (544, 657)
 		self.buy_ticketY = (503, 532)
 
+
+class Daily(General):
+	"""日常任务中的各种坐标"""
+	def __init__(self):
+		General.__init__(self)
+		self.daily_ug()
+	# 极 地铁
+	def daily_ug(self):
+		self.ugX = (367, 411)
+		self.ugY = (760, 821)
+		
+		
 
 class RaidPhone1080X2340(General):
 	def __init__(self):

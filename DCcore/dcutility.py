@@ -13,7 +13,8 @@ Usage:
 from time import sleep
 import random
 import os
-import sys
+import subprocess
+import numpy as np
 import cv2
 import logging as lg  # TODO 设置其他颜色的日志输出未果
 from conf.DClocation import General
@@ -186,9 +187,9 @@ class ImageMatchSet(object):
 			self.__screenshots = self.__screenshots[-4:]
 		return self.__screenshots
 	
-	def capture_adb(self):
+	def pullimage_adb(self):
 		"""
-		使用adb内置截屏功能,将截屏图片加入self.__screenshots中
+		使用adb内置截屏功能，在安卓端生成png图片然后拉取到本地读取信息，加入self.__screenshots中
 		:return: 返回最新截屏的cv2读取数据
 		"""
 		cmd_get = "adb shell screencap -p /sdcard/screen_img.png"
@@ -197,19 +198,38 @@ class ImageMatchSet(object):
 		os.system(cmd_send)
 		# 记录当前屏幕截图（cv2读取数据）
 		screen_image = cv2.imread("../image/screen_img.png", 0)
+		self.screenshots.append(screen_image)
+		return screen_image
+		
+	def capture_adb(self):
+		"""
+		使用adb内置截屏功能，直接读取当前屏幕信息，然后将截屏图片加入self.__screenshots中
+		:return: 返回最新截屏的cv2读取数据
+		"""
+		pipe = subprocess.Popen("adb shell screencap -p",
+								stdin=subprocess.PIPE,
+								stdout=subprocess.PIPE, shell=True)
+		# 安卓二进制和Windows有细小差别
+		image_bytes = pipe.stdout.read().replace(b'\r\n', b'\n')
+		screen_image = cv2.imdecode(np.fromstring(image_bytes, np.uint8),
+							 0)  # cv2.IMREAD_COLOR   1
 		# 将截图（cv2读取数据）加入self.screenshots列表中
-		screens = self.screenshots
-		screens.append(screen_image)
+		self.screenshots.append(screen_image)
 		return screen_image
 	
-	def back_to_main_menu(self):
-		# return DC main menu(ongoing)
-		sleeptime(1, 1.5)
-		cv2value1, cv2real_value = image_match(self.image_pf.mian_flags, 0.8)
-		if 1 not in cv2value1:
-			print cv2real_value
+	def backhome(self, backs, time=0.8):
+		"""
+		return DC main menu
+		backs(Int): 返回次数
+		time(Float): time second
+		:return:
+		"""
+		for i in xrange(backs-1):
+			sleep(time)
 			back()
-			self.back_to_main_menu()
+		# 循环监测，循环back
+		self.whileset(image_g.quit, loop=True, func=back)
+		humanbeing_click(lt_gl.noX, lt_gl.noY)
 	
 	def image_match(self, temp, threshold=0.8, screen_image=None):
 		"""
@@ -335,11 +355,12 @@ class ImageMatchSet(object):
 		#  cv2.waitKey(0)
 		cv2.waitKey(para)
 	
-	def whileset(self, image, a=4, b=6, loop = True):
+	def whileset(self, image, a=4, b=6, loop = True, func = None):
 		"""循环等待，直到最新的屏幕内容与图片匹配成功，退出
 		image(Str/Unicode/List): 需要匹配的图片的地址，也可以是列表
 		a b(Second): 等待时间的范围（sec）
 		loop(Boolean): whether loop if match fail; Defualt Ture
+		func(Function): 未匹配成功时启动的函数
 		:returns: break loop if match fail when set loop=False, return 0
 		"""
 		if isinstance(image, list):
@@ -348,15 +369,18 @@ class ImageMatchSet(object):
 			while not finish:
 				sleeptime(a, b)
 				for i in image:
-					whileset_res1 = self.image_match(i)[0]
+					whileset_res1 = self.image_match(i)
 					# whileset_res2 = self.image_match(
 					# 	i, threshold=0.8, screen_image=self.__screenshots[-1])[0]
-					if whileset_res1 == 1:
+					if whileset_res1[0] == 1:
 						finish = True
 						break
 					else:
+						print whileset_res1[1]
 						count += 1
 						print "{} whileset not complete {} times".format(image,count)
+						if func:
+							func()
 						if not loop:
 							return 0
 				print "Image: '{}' matched!".format(image)
@@ -366,12 +390,14 @@ class ImageMatchSet(object):
 			count = 0
 			while not finish:
 				sleeptime(a, b)
-				whileset_res = self.image_match(image)[0]
-				if whileset_res == 1:
+				whileset_res = self.image_match(image)
+				if whileset_res[0] == 1:
 					finish = True
 				else:
 					count += 1
 					print "{} whileset not complete {} times".format(image,count)
+					if func:
+						func()
 					if not loop:
 						return 0
 			print "Image: '{}' matched!".format(image)
@@ -448,12 +474,8 @@ def auto_hide(flag):
 	
 if __name__ == '__main__':
 	os.chdir("../adb")
-	os.system("adb connect 127.0.0.1:21505")
+	# os.system("adb connect 127.0.0.1:21505")
 	mt = ImageMatchSet(cv2.TM_CCOEFF_NORMED)
-	mt.image_match(ur"G:\MoveOn\boomboost\image\farm\select.png",0.8)
-	# point = mt.point(0.25)
-	# humanbeing_click_point(point)
-	mt.show(4)
-	sleeptime(50,60)
+	mt.backhome(1)
 
 	

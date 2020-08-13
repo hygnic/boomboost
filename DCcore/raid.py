@@ -17,7 +17,7 @@ import sys
 import logging as lg
 import dcutility as dc
 from conf. DClocation import Raid, RaidPhone1080X2340
-from conf.pathfile import Imageraid
+from conf.pathfile import ImageRaid
 
 
 def check_flag():
@@ -111,11 +111,11 @@ def raid_detect(time):
 if __name__ == '__main__':
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	# 适配 emulator
-	# lt_raid = Raid()
-	# imageraid = Imageraid("raid")
-	
-	lt_raid = RaidPhone1080X2340()
-	imageraid = Imageraid("raid_phone")
+	lt_raid = Raid()
+	imageraid = ImageRaid("raid")
+	#
+	# lt_raid = RaidPhone1080X2340()
+	# imageraid = Imageraid("raid_phone")
 	# 适配phone 1080X2340
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	
