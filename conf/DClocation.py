@@ -218,10 +218,10 @@ class Raid(General):
 		"""
 		# 第一排第二个 HP
 		self.raid_12X = (403, 490)
-		self.raid_12Y = (758, 789)
+		self.raid_12Y = (760, 785)
 		# 第二排第三个 未参加
 		self.raid_23X = (519, 534)
-		self.raid_23Y = (857, 872)
+		self.raid_23Y = (860, 870)
 		# 确认键
 		self.filter_OKX = (451, 538)
 		self.filter_OKY = (657, 679)
@@ -254,11 +254,11 @@ class RaidPhone1080X2340(General):
 			第二排	胜利 败北 未参加 临近收尾
 		"""
 		# 第一排第二个 HP
-		self.raid_12X = (338, 520)
+		self.raid_12X = (348, 510)
 		self.raid_12Y = (2058, 2119)
 		# 第二排第三个 未参加
 		self.raid_23X = (578, 608)
-		self.raid_23Y = (2254, 2284)
+		self.raid_23Y = (2257, 2280)
 		# 确认键
 		self.filter_OKX = (427, 650)
 		self.filter_OKY = (1848, 1919)

@@ -32,9 +32,9 @@ def filter_sort():
 	# 点击 未参加
 	dc.humanbeing_click(lt_raid.raid_23X, lt_raid.raid_23Y, 0.3)
 	# 点击 按 HP 排序
-	dc.humanbeing_click(lt_raid.raid_12X, lt_raid.raid_12Y, 0.4)
+	dc.humanbeing_click(lt_raid.raid_12X, lt_raid.raid_12Y, 0.8)
 	# 点击确认键以返回
-	dc.humanbeing_click(lt_raid.filter_OKX, lt_raid.filter_OKY, 0.7)
+	dc.humanbeing_click(lt_raid.filter_OKX, lt_raid.filter_OKY, 0.8)
 
 def refresh():
 	"""点击右侧刷新按键"""
@@ -51,10 +51,14 @@ def select_boss_battle():
 		select_boss_battle()
 	if res[0] == 1: # 存在40级的
 		# 点击 level40 标志
-		dc.humanbeing_click_point(ims.point(zoom=0))
+		point = ims.point(zoom=0.3)
+		dc.humanbeing_click_point(point)
 		dc.sleeptime(0.3, 0.6)
 		# 确认进入到raid配置界面
-		ims.whileset(imageraid.raid_battle, 0.8, 1)
+		res = ims.whileset(imageraid.raid_battle, 0.8, 1, loop=False)
+		if res == 0: # 未进入到 raid_battle icon 界面 再点一次
+			refresh()
+			select_boss_battle()
 		# battle-button icon
 		battle_icon = ims.point(zoom=0.3)
 		dc.humanbeing_click_point(battle_icon)
@@ -96,19 +100,22 @@ def raid_detect(time):
 	"""Detecting the boss raid battle whether finished"""
 	dc.sleep(time)
 	ims.whileset([imageraid.raid_complete, imageraid.raid_complete2])
-	res = ims.image_match(imageraid.raid_complete)
+	# res = ims.image_match(imageraid.raid_complete)
+	# dc.sleep(1)
+	
 	dc.back()
 	dc.sleep(4)
+	
 	
 	
 if __name__ == '__main__':
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	# 适配 emulator
-	lt_raid = Raid()
-	imageraid = Imageraid("raid")
+	# lt_raid = Raid()
+	# imageraid = Imageraid("raid")
 	
-	# lt_raid = RaidPhone1080X2340()
-	# imageraid = Imageraid("raid_phone")
+	lt_raid = RaidPhone1080X2340()
+	imageraid = Imageraid("raid_phone")
 	# 适配phone 1080X2340
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	
@@ -120,4 +127,4 @@ if __name__ == '__main__':
 		check_flag()
 		filter_sort()
 		select_boss_battle()
-		raid_detect(265)
+		raid_detect(255)

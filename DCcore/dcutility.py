@@ -335,10 +335,12 @@ class ImageMatchSet(object):
 		#  cv2.waitKey(0)
 		cv2.waitKey(para)
 	
-	def whileset(self, image, a=4, b=6):
+	def whileset(self, image, a=4, b=6, loop = True):
 		"""循环等待，直到最新的屏幕内容与图片匹配成功，退出
 		image(Str/Unicode/List): 需要匹配的图片的地址，也可以是列表
 		a b(Second): 等待时间的范围（sec）
+		loop(Boolean): whether loop if match fail; Defualt Ture
+		:returns: break loop if match fail when set loop=False, return 0
 		"""
 		if isinstance(image, list):
 			finish = False
@@ -355,6 +357,8 @@ class ImageMatchSet(object):
 					else:
 						count += 1
 						print "{} whileset not complete {} times".format(image,count)
+						if not loop:
+							return 0
 				print "Image: '{}' matched!".format(image)
 		
 		else: # 单个图片
@@ -368,6 +372,8 @@ class ImageMatchSet(object):
 				else:
 					count += 1
 					print "{} whileset not complete {} times".format(image,count)
+					if not loop:
+						return 0
 			print "Image: '{}' matched!".format(image)
 		
 	def backtopage(self, flag, a=1.4, b=1.6):
