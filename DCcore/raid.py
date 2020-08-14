@@ -111,16 +111,16 @@ def raid_detect(time):
 if __name__ == '__main__':
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	# 适配 emulator
-	lt_raid = Raid()
-	imageraid = ImageRaid("raid")
-	#
-	# lt_raid = RaidPhone1080X2340()
-	# imageraid = Imageraid("raid_phone")
+	# lt_raid = Raid()
+	# imageraid = ImageRaid("raid")
+
+	lt_raid = RaidPhone1080X2340()
+	imageraid = ImageRaid("raid_phone")
 	# 适配phone 1080X2340
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	
 	os.chdir("../adb")
-	os.system("adb connect 127.0.0.1:21503")
+	# os.system("adb connect 127.0.0.1:21503")
 	# ims.capture_adb()
 	ims = dc.ImageMatchSet()
 	while True:

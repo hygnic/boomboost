@@ -18,15 +18,20 @@ ims =  dc.ImageMatchSet()
 lt_gl = General()
 image = ImageDaily("daily")
 
-def UG():
+def ug():
 	# 进入 night world
 	dc.humanbeing_click(lt_gl.nightworldX, lt_gl.nightworldY)
-	ims.whileset(image.image_ug)
+	ims.whileset(image.ug)
 	dc.humanbeing_click_point(ims.point(zoom=0.1))
 	
 
-
+def re():
+	ims.backhome(5)
+	
+	
+	
+	
 if __name__ == '__main__':
 	os.chdir("../adb")
 	os.system("adb connect 127.0.0.1:21503")
-	UG()
+	ug()

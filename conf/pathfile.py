@@ -128,12 +128,18 @@ class ImageDaily(ImageDCGeneral):
 		ImageDCGeneral.__init__(self)
 		self.daily = os.path.join(image_dir, dirctory)
 		self.daily_ug()
+		self.daily_re()
 		
 	def daily_ug(self):
 		# 地铁 ug
-		self.image_ug = os.path.join(self.daily, "ug.png")
+		self.ug = os.path.join(self.daily, "ug.png")
 
-
+	def daily_re(self):
+		# skin tower
+		self.re = os.path.join(self.daily, "re.png")
+	
+	
+	
 if __name__ == '__main__':
 	aa = Path()
 	print main_dir

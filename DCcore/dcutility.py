@@ -13,6 +13,7 @@ Usage:
 from time import sleep
 import random
 import os
+import sys
 import subprocess
 import numpy as np
 import cv2
@@ -156,8 +157,11 @@ def back(a=0.1, b=0.3):
 	# 自带延迟返回
 	sleeptime(a, b)
 	back_code = "adb shell input keyevent 4"
-	os.system(back_code)
-
+	subprocess.Popen(back_code)
+	
+# back home
+def home_adb():
+	subprocess.Popen("adb shell input keyevent 3")
 
 class ImageMatchSet(object):
 	image_pf = pathfile.Path()
@@ -172,6 +176,7 @@ class ImageMatchSet(object):
 		self.__screenshots = [1, 2, 3, 4]
 		# 最小值的位置、最大值的位置、模板的高、模板的宽，由于我们使用cv2.TM_CCOEFF_NORMED算法，所以只有最大值的位置
 		self.location_size = []  # [min_loc, max_loc, h, w]
+		self.count = 0 # 用于 whileset 循环计数，实现超过次数后关闭程序
 		
 	# use this function to call self.__screenshots
 	
@@ -354,19 +359,32 @@ class ImageMatchSet(object):
 		# cv2.destroyAllWindows()
 		#  cv2.waitKey(0)
 		cv2.waitKey(para)
+		
+	@property
+	def loopcount(self):
+		return self.count
+	
+	def loopout(self, shutdown=True, count=26):
+		"""循环匹配次数超过限制时，触发该方法"""
+		if self.count >= count:
+			if shutdown:
+				home_adb()
+			sys.exit("<<loop out>>")
 	
 	def whileset(self, image, a=4, b=6, loop = True, func = None):
 		"""循环等待，直到最新的屏幕内容与图片匹配成功，退出
 		image(Str/Unicode/List): 需要匹配的图片的地址，也可以是列表
 		a b(Second): 等待时间的范围（sec）
 		loop(Boolean): whether loop if match fail; Defualt Ture
-		func(Function): 未匹配成功时启动的函数
+		func(Function): 未匹配成功时启动该函数 默认无功能函数
 		:returns: break loop if match fail when set loop=False, return 0
 		"""
+		self.count = 0
 		if isinstance(image, list):
 			finish = False
-			count = 0
 			while not finish:
+				self.count += 1
+				self.loopout() # 循环匹配次数超过限制时，结束app，结束程序
 				sleeptime(a, b)
 				for i in image:
 					whileset_res1 = self.image_match(i)
@@ -376,26 +394,24 @@ class ImageMatchSet(object):
 						finish = True
 						break
 					else:
-						print whileset_res1[1]
-						count += 1
-						print "{} whileset not complete {} times".format(image,count)
+						# print whileset_res1[1]
+						print "image:{} [whileset] not complete {} times".format(image,self.count)
 						if func:
 							func()
 						if not loop:
 							return 0
 				print "Image: '{}' matched!".format(image)
-		
 		else: # 单个图片
 			finish = False
-			count = 0
 			while not finish:
+				self.count += 1
+				self.loopout() # 循环匹配次数超过限制时，结束app，结束程序
 				sleeptime(a, b)
 				whileset_res = self.image_match(image)
 				if whileset_res[0] == 1:
 					finish = True
 				else:
-					count += 1
-					print "{} whileset not complete {} times".format(image,count)
+					print "{} [whileset] not complete {} times".format(image,self.count)
 					if func:
 						func()
 					if not loop:

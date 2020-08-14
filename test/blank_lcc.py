@@ -3,7 +3,7 @@
 # ---------------------------------------------------------------------------
 # Author: LiaoChenchen
 # Created on: 2020/7/27 16:33
-# Reference:
+# Reference: https://blog.csdn.net/zhonglunshun/article/details/78362439?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param
 """
 Description:
 Usage:
@@ -11,6 +11,7 @@ Usage:
 # ---------------------------------------------------------------------------
 import cv2
 import os
+import subprocess
 from DCcore import dcutility as dc
 
 # image = r"G:\MoveOn\boomboost\image\spring\spring_house.png"
@@ -28,5 +29,7 @@ from DCcore import dcutility as dc
 
 os.chdir("../adb")
 # os.system("adb connect 127.0.0.1:21501")
-ims = dc.ImageMatchSet()
-ims.capture_adb()
+# os.system("adb shell input keyevent 3") # back home
+subprocess.Popen("adb shell input keyevent 3") # back home
+# ims = dc.ImageMatchSet()
+# ims.capture_adb()
