@@ -14,7 +14,7 @@ Usage:
 # ---------------------------------------------------------------------------
 import os
 import sys
-import logging as lg
+import logging as log
 import dcutility as dc
 from conf. DClocation import Raid, RaidPhone1080X2340
 from conf.pathfile import ImageRaid
@@ -70,7 +70,7 @@ def check_done():
 	"""在我们点击battle按键后，检测battle是否已经被别人完成"""
 	dc.sleep(2)
 	res = ims.image_match(
-		imageraid.already_done, threshold=0.8, screen_image=ims.screenshots[-1])
+		imageraid.already_done, threshold=0.7, screen_image=ims.screenshots[-1])
 	if res[0] == 1:
 		dc.back(0.1, 0.2)
 		check_flag()
@@ -109,22 +109,23 @@ def raid_detect(time):
 	
 	
 if __name__ == '__main__':
+	dc.log_settin(log.DEBUG)
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	# 适配 emulator
-	# lt_raid = Raid()
-	# imageraid = ImageRaid("raid")
-
-	lt_raid = RaidPhone1080X2340()
-	imageraid = ImageRaid("raid_phone")
+	lt_raid = Raid()
+	imageraid = ImageRaid("raid")
+	#
+	# lt_raid = RaidPhone1080X2340()
+	# imageraid = ImageRaid("raid_phone")
 	# 适配phone 1080X2340
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	
 	os.chdir("../adb")
-	# os.system("adb connect 127.0.0.1:21503")
+	os.system("adb connect 127.0.0.1:21503")
 	# ims.capture_adb()
 	ims = dc.ImageMatchSet()
 	while True:
 		check_flag()
 		filter_sort()
 		select_boss_battle()
-		raid_detect(255)
+		raid_detect(218)

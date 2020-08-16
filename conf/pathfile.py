@@ -24,8 +24,8 @@ image_dir = os.path.join(main_dir, "image")
 # image_f = os.path.join(main_dir,"image/image_CN")
 
 
-agate2coin_dir = os.path.join(image_dir, "agate2coin")
-farm = os.path.join(image_dir, "farm")
+
+# farm = os.path.join(image_dir, "farm")
 
 """图片配置
 raid = os.path.join(image_f,"raid_phone")
@@ -69,7 +69,8 @@ class ImageDCGeneral(object):
 
 # 将玛瑙转化为金币的一些图片
 class ImageAgateToCoin(ImageDCGeneral):
-	def __init__(self):
+	def __init__(self, dirr = "agate2coin"):
+		agate2coin_dir = os.path.join(image_dir, dirr) #
 		ImageDCGeneral.__init__(self)
 		# 提升好感度的按键
 		self.improve_impression = os.path.join(agate2coin_dir,
@@ -85,9 +86,10 @@ class ImageAgateToCoin(ImageDCGeneral):
 		
 		
 class ImageFarm(ImageDCGeneral):
-	def __init__(self):
+	def __init__(self, dirr="farm"):
 		ImageDCGeneral.__init__(self)
 		
+		farm = os.path.join(image_dir, dirr)
 		# 满级
 		self.levelmax = os.path.join(farm, "levelmax.png")
 		

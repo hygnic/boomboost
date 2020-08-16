@@ -9,8 +9,6 @@ Description:
 Usage:
 """
 # ---------------------------------------------------------------------------
-
-
 class Spring(object):
 	def __init__(self):
 		self.spring()
@@ -85,8 +83,8 @@ class Farm(object):
 		self.first_poltX = (309, 373)
 		self.first_poltY = (79, 254)
 		
-		self.second_poltX = (385, 454)
-		self.second_poltY = (76, 251)
+		self.second_poltX = (390, 430)
+		self.second_poltY = (95, 240)
 		
 		self.third_poltX = (473, 537)
 		self.third_poltY = (77, 240)
@@ -141,8 +139,8 @@ class General(object):
 	
 	def charater_interface(self):
 		# 进入筛选按钮 （中间靠右黑色）
-		self.filterX = (667, 749)
-		self.filterY = (360, 388)
+		self.filterX = (680, 734)
+		self.filterY = (363, 379)
 		
 		# 裁剪 勾选影藏选项 （右上角）
 		self.auto_hideX = (631, 648)
@@ -198,7 +196,7 @@ class AgateToCoin(object):
 		
 		# 点击D class、C class之类的
 		self.impression_classX = (395, 432)
-		self.impression_classY = (379, 428)
+		self.impression_classY = (388, 420)
 		
 		# 红色的确认键
 		self.improve_impression_confirmX = (457, 543)
@@ -219,7 +217,7 @@ class Raid(General):
 		
 		# raid筛选按键
 		self.raid_filterX = (661, 742)
-		self.raid_filterY = (313, 339)
+		self.raid_filterY = (318, 335)
 		
 		"""
 		raid筛选选项

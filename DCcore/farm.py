@@ -36,6 +36,7 @@ def initil():
 	# 选择两星的角色
 	humanbeing_click(lt_gl.star2X, lt_gl.star2Y)
 	dc.auto_hide(True)
+	dc.sleep(0.4)
 	back()
 	
 def check_level():
@@ -71,7 +72,7 @@ def team_conf(vacancy):
 	flag_res = ims.image_match(flag1)
 	if flag_res[0]==1: # 重复角色
 		repeat = image.repeat
-		screenswipe((775, 853), (511, 672),(75, 853), (120, 672))  # swipe screen
+		screenswipe((602, 742), (561, 654), (94, 237), (561, 654))  # swipe screen
 		time.sleep(1.5)
 		
 		# loop add child
@@ -95,7 +96,7 @@ def team_conf(vacancy):
 			while not good:
 				humanbeing_click(lt.join_teamX,lt.join_teamY)
 				time.sleep(0.6)
-				repeat_res = ims.image_match(repeat)
+				repeat_res = ims.image_match(repeat, threshold=0.6)
 				if repeat_res[0] == 1:  # 出现重复角色的问题
 					# click back button
 					back()
@@ -105,19 +106,20 @@ def team_conf(vacancy):
 					humanbeing_click(lt_gl.leftsideX, lt_gl.leftsideY)
 					time.sleep(0.2)
 				else:
+					print repeat_res[1]
 					good =True
 			# 将选择好的天子放到队伍中
 			# 点击上面的位置
 			one_position = lt.position[i]
-			humanbeing_click(one_position[0], one_position[1])
-			time.sleep(0.3)
-		back()
+			humanbeing_click(one_position[0], one_position[1],  a=0.1, b =0.2)
+			time.sleep(0.1)
+		back(a=0.2, b=0.3)
 
 def start():
 	"""
 	从战斗配置主界面开始，进行连续战斗
 	"""
-	time.sleep(0.3)
+	time.sleep(1)
 	# 配置自动战斗系统
 	# 选择自动战斗的方式，我们选择重新开始（分别有暂停、下一场、重新开始）
 	humanbeing_click(lt.battle_styleX, lt.battle_styleY)
@@ -140,15 +142,16 @@ def fighting(second):
 	finish = False
 	time.sleep(second)
 	fight_result_image = image.battle_result
-	fighting_res = ims.image_match(fight_result_image)
-	if fighting_res[0] == 1:
-		finish = True
-	else: # 战斗未结束
-		while not finish:
-			sleeptime(5, 10)
-			fighting_res = ims.image_match(fight_result_image)
-			if fighting_res[0] == 1:
-				finish = True
+	ims.whileset(fight_result_image)
+	# fighting_res = ims.image_match(fight_result_image)
+	# if fighting_res[0] == 1:
+	# 	finish = True
+	# else: # 战斗未结束
+	# 	while not finish:
+	# 		sleeptime(5, 10)
+	# 		fighting_res = ims.image_match(fight_result_image)
+	# 		if fighting_res[0] == 1:
+	# 			finish = True
 	back()
 	
 

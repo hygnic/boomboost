@@ -17,7 +17,7 @@ import sys
 import subprocess
 import numpy as np
 import cv2
-import logging as lg  # TODO 设置其他颜色的日志输出未果
+import logging as log  # TODO 设置其他颜色的日志输出未果
 from conf.DClocation import General
 from conf import pathfile
 from conf.DClocation import Spring
@@ -31,9 +31,10 @@ lt_gl = General()  # 位置信息
 
 
 # 日志信息设置
-lg.basicConfig(
-	format="%(asctime)s >> %(funcName)s %(levelname)s: %(message)s",
-	datefmt="%d-%m-%Y %H:%M:%S", level=lg.DEBUG)
+def log_settin(level): # dc.log_settin(log.debug)
+	log.basicConfig(
+		format="%(asctime)s >> %(funcName)s %(levelname)s: %(message)s",
+		datefmt="%d-%m-%Y %H:%M:%S", level=level)
 
 
 def get_randxy(x, y):  # (570, 650),(240, 310)
@@ -104,13 +105,13 @@ def check_screen(match_method=cv2.TM_CCOEFF_NORMED):
 	if result.max() > 0.8:
 		# 询问退出 填否
 		humanbeing_click(lt_sp.no_quitX, lt_sp.no_quitY)
-		lg.debug(u"拒绝退出")
+		log.debug(u"拒绝退出")
 		sleep(1.5)
 	result = cv2.matchTemplate(screen_image, check2, match_method)
 	if result.max() > 0.8:
 		# 询问网络问题，确认重连
 		humanbeing_click(lt_sp.reconnectX, lt_sp.reconnectY)
-		lg.debug(u"重连网络")
+		log.debug(u"重连网络")
 		sleep(5)
 
 
@@ -158,6 +159,8 @@ def back(a=0.1, b=0.3):
 	sleeptime(a, b)
 	back_code = "adb shell input keyevent 4"
 	subprocess.Popen(back_code)
+	log.debug("call Android Back")
+	# print "call Android Back"
 	
 # back home
 def home_adb():
@@ -272,7 +275,7 @@ class ImageMatchSet(object):
 				self.rectangle(temp_image, self.result_array)
 				return 1, result
 			else:
-				lg.warn("<1104> <{}> not matched!".format(temp))
+				log.warn("<1104> <{}> not matched!".format(temp))
 				# 显示图像
 				self.rectangle(temp_image, self.result_array)
 				return 0, result
@@ -292,12 +295,12 @@ class ImageMatchSet(object):
 		# 将模板数据保存于 self.location_size，可以全局共享
 		self.location_size = [min_loc, max_loc, h, w]
 		
-		lg.debug("max_lefttop:{}".format(max_lefttop))
-		lg.debug("max_rightbottom:{}".format(max_rightbottom))
+		# log.debug("max_lefttop:{}".format(max_lefttop))
+		# log.debug("max_rightbottom:{}".format(max_rightbottom))
 		
 		current_screen = self.screenshots[-1]
 		cv2.rectangle(current_screen, max_lefttop, max_rightbottom, [255, 255, 255], 3)
-		lg.debug("show screen detected")
+		# log.debug("show screen detected")
 	
 	# 在图框区域选一个点
 	def point(self, zoom=0.25, x_add=0, y_add =0):
@@ -335,7 +338,7 @@ class ImageMatchSet(object):
 			random_point= self.get_randxy2(
 				(newx1+x_add, newx2+x_add), (newy1+y_add, newy2+y_add)
 			)
-			lg.debug("xlength:{},ylength:{}".format(xlength, ylength))
+			# log.debug("xlength:{},ylength:{}".format(xlength, ylength))
 			return random_point # (123,789)
 		else: # zoom为0的情况，表示在不缩放的区域内选择一个点
 			x = (max_lefttop[0],max_lefttop[0] + width)
@@ -371,7 +374,7 @@ class ImageMatchSet(object):
 				home_adb()
 			sys.exit("<<loop out>>")
 	
-	def whileset(self, image, a=4, b=6, loop = True, func = None):
+	def whileset(self, image, a=4, b=6, threshold=0.8, loop = True, func = None):
 		"""循环等待，直到最新的屏幕内容与图片匹配成功，退出
 		image(Str/Unicode/List): 需要匹配的图片的地址，也可以是列表
 		a b(Second): 等待时间的范围（sec）
@@ -387,7 +390,7 @@ class ImageMatchSet(object):
 				self.loopout() # 循环匹配次数超过限制时，结束app，结束程序
 				sleeptime(a, b)
 				for i in image:
-					whileset_res1 = self.image_match(i)
+					whileset_res1 = self.image_match(i,threshold=threshold)
 					# whileset_res2 = self.image_match(
 					# 	i, threshold=0.8, screen_image=self.__screenshots[-1])[0]
 					if whileset_res1[0] == 1:
@@ -395,7 +398,7 @@ class ImageMatchSet(object):
 						break
 					else:
 						# print whileset_res1[1]
-						print "image:{} [whileset] not complete {} times".format(image,self.count)
+						log.debug("{} [whileset] not complete {} times".format(image,self.count))
 						if func:
 							func()
 						if not loop:
@@ -407,11 +410,11 @@ class ImageMatchSet(object):
 				self.count += 1
 				self.loopout() # 循环匹配次数超过限制时，结束app，结束程序
 				sleeptime(a, b)
-				whileset_res = self.image_match(image)
+				whileset_res = self.image_match(image, threshold=threshold)
 				if whileset_res[0] == 1:
 					finish = True
 				else:
-					print "{} [whileset] not complete {} times".format(image,self.count)
+					log.debug("{} [whileset] not complete {} times".format(image,self.count))
 					if func:
 						func()
 					if not loop:
@@ -428,8 +431,8 @@ class ImageMatchSet(object):
 		flag_res = self.image_match(flag, 0.89)[0]
 		if flag_res == 0:
 			self.backtopage(flag)
-		else:
-			print "Back to flag: '{}' page successed!".format(flag)
+		# else:
+		# 	print "Back to flag: '{}' page successed!".format(flag)
 			
 			
 			
