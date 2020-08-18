@@ -46,10 +46,10 @@ def read21():
                             stdout=subprocess.PIPE, shell=True)
     image_bytes = pipe.stdout.read().replace(b'\r\n', b'\n')
     image = cv2.imdecode(np.fromstring(image_bytes, np.uint8), 0)  # cv2.IMREAD_COLOR   1
-    # cv2.namedWindow("", cv2.WINDOW_NORMAL) # cv2.WINDOW_NORMAL 可修改窗口大小
-    # cv2.imshow("", image)
-    # cv2.waitKey(0)
-    # cv2.destroyWindow("")
+    cv2.namedWindow("", cv2.WINDOW_NORMAL) # cv2.WINDOW_NORMAL 可修改窗口大小
+    cv2.imshow("", image)
+    cv2.waitKey(1000) # one second
+    cv2.destroyWindow("")
 
 @timewrap
 def read11():
@@ -66,6 +66,6 @@ def read11():
         
         
 if __name__ == '__main__':
-    for i in xrange(9):
+    # for i in xrange(9):
         read21()
         # read11()

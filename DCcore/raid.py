@@ -30,7 +30,7 @@ def filter_sort():
 	# 点击过滤按键
 	dc.humanbeing_click(lt_raid.raid_filterX, lt_raid.raid_refreshY, 0.3)
 	# 点击 未参加
-	dc.humanbeing_click(lt_raid.raid_23X, lt_raid.raid_23Y, 0.3)
+	dc.humanbeing_click(lt_raid.raid_23X, lt_raid.raid_23Y, 0.5)
 	# 点击 按 HP 排序
 	dc.humanbeing_click(lt_raid.raid_12X, lt_raid.raid_12Y, 0.8)
 	# 点击确认键以返回
@@ -112,11 +112,11 @@ if __name__ == '__main__':
 	dc.log_settin(log.DEBUG)
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	# 适配 emulator
-	lt_raid = Raid()
-	imageraid = ImageRaid("raid")
-	#
-	# lt_raid = RaidPhone1080X2340()
-	# imageraid = ImageRaid("raid_phone")
+	# lt_raid = Raid()
+	# imageraid = ImageRaid("raid")
+
+	lt_raid = RaidPhone1080X2340()
+	imageraid = ImageRaid("raid_phone")
 	# 适配phone 1080X2340
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	
@@ -128,4 +128,4 @@ if __name__ == '__main__':
 		check_flag()
 		filter_sort()
 		select_boss_battle()
-		raid_detect(218)
+		raid_detect(228)
