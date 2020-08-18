@@ -403,7 +403,7 @@ class ImageMatchSet(object):
 							func()
 						if not loop:
 							return 0
-				print "Image: '{}' matched!".format(image)
+			print "Image: '{}' matched!".format(image)
 		else: # 单个图片
 			finish = False
 			while not finish:

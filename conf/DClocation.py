@@ -265,7 +265,7 @@ class RaidPhone1080X2340(General):
 		self.raid_refreshY = (718, 757)
 		
 		# raid筛选按键
-		self.raid_filterX = (864, 1030)
+		self.raid_filterX = (864, 1022)
 		self.raid_filterY = (718, 757)
 		
 		"""
