@@ -128,4 +128,4 @@ if __name__ == '__main__':
 		check_flag()
 		filter_sort()
 		select_boss_battle()
-		raid_detect(218)
+		raid_detect(228)
