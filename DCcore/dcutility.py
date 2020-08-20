@@ -11,6 +11,7 @@ Usage:
 # ---------------------------------------------------------------------------
 # from __future__ import absolute_import
 from time import sleep
+import time
 import random
 import os
 import sys
@@ -36,6 +37,23 @@ def log_settin(level): # dc.log_settin(log.debug)
 		format="%(asctime)s >> %(funcName)s %(levelname)s: %(message)s",
 		datefmt="%d-%m-%Y %H:%M:%S", level=level)
 
+# 装饰函数 计算程序运行时间
+def timewrap(func):
+	def inner():
+		start = time.time()
+		func()
+		end = time.time()
+		print('Program time consuming: ',end - start)
+	return inner
+
+# 装饰函数 计算CPU执行时间
+def timewrap_cpu(func):
+	def inner():
+		start = time.clock()
+		func()
+		end = time.clock()
+		print('CPU time consuming: ',end - start)
+	return inner
 
 def get_randxy(x, y):  # (570, 650),(240, 310)
 	"""产生一个在x,y二维区域内的随机位置,x,y为两个元素的列表，变量范围"""
@@ -225,15 +243,15 @@ class ImageMatchSet(object):
 		self.screenshots.append(screen_image)
 		return screen_image
 	
-	def backhome(self, backs, time=0.8):
+	def backhome(self, backs, sec=0.8):
 		"""
 		return DC main menu
 		backs(Int): 返回次数
-		time(Float): time second
+		sec(Float): time second
 		:return:
 		"""
 		for i in xrange(backs-1):
-			sleep(time)
+			sleep(sec)
 			back()
 		# 循环监测，循环back
 		self.whileset(image_g.quit, loop=True, func=back)
