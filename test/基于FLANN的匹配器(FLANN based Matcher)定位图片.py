@@ -18,13 +18,12 @@ from DCcore import dcutility as dc
 
 
 @dc.timewrap
-def image_match_SIFT():
+def image_match_SIFT(temp, screen=None, threhold = 0.7):
 	# Image Identification
 	# template = cv2.imread('template_adjust.jpg', 0)  # queryImage
 	# target = cv2.imread('target.jpg', 0)  # trainImage
-	
-	template = cv2.imread('1212_1_0.5size.jpg', 0)  # queryImage
-	target = cv2.imread('1212.png', 0)  # trainImage
+	template = cv2.imread(temp, 0)  # queryImage '1212_1_0.5size.jpg'
+	target = cv2.imread(screen, 0)  # trainImage '1212.png'
 	# Initiate SIFT detector创建sift检测器
 	sift = cv2.xfeatures2d.SIFT_create()
 	# find the keypoints and descriptors with SIFT
@@ -71,4 +70,6 @@ def image_match_SIFT():
 	plt.show()
 
 if __name__ == '__main__':
-	image_match_SIFT()
+	# 1212_1_0.5size.jpg'
+	# 	target = cv2.imread(screen, 0)  # trainImage '1212.png'
+	image_match_SIFT(temp = '1212_1_0.5size.jpg', )

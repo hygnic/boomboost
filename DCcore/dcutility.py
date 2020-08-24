@@ -17,6 +17,7 @@ import os
 import sys
 import subprocess
 import numpy as np
+from matplotlib import pyplot as plt
 import cv2
 import logging as log  # TODO 设置其他颜色的日志输出未果
 from conf.DClocation import General
@@ -318,7 +319,77 @@ class ImageMatchSet(object):
 		
 		current_screen = self.screenshots[-1]
 		cv2.rectangle(current_screen, max_lefttop, max_rightbottom, [255, 255, 255], 3)
-		# log.debug("show screen detected")
+	
+	# @dc.timewrap
+	def image_match_SIFT(self, temp, threhold=0.7, screen_image=None, show=False):
+		"""基于FLANN的匹配器(FLANN based Matcher)定位图片
+		temp(String/Unicode): 匹配模板，地址
+		threhold:
+		target_image(cv2.imread): 通过cv2.imread读取的与模板相比较的图片数据，如果不指定，截取当前屏幕
+		:return:
+		"""
+		# Image Identification
+		# template = cv2.imread('template_adjust.jpg', 0)  # queryImage
+		# target = cv2.imread('target.jpg', 0)  # trainImage
+		if screen_image is None: # get screenshot(cv2.imread)
+			screen_image = self.capture_adb()
+		template = cv2.imread(temp, 0)  # queryImage '1212_1_0.5size.jpg'
+		target = screen_image  # trainImage '1212.png'
+		# target = cv2.imread(target_image, 0)
+		
+		# Initiate SIFT detector创建sift检测器
+		sift = cv2.xfeatures2d.SIFT_create()
+		# find the keypoints and descriptors with SIFT
+		kp1, des1 = sift.detectAndCompute(template, None)
+		kp2, des2 = sift.detectAndCompute(target, None)
+		# 创建设置 FLANN 匹配
+		FLANN_INDEX_KDTREE = 0
+		index_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
+		search_params = dict(checks=50)
+		flann = cv2.FlannBasedMatcher(index_params, search_params)
+		matches = flann.knnMatch(des1, des2, k=2)
+		# store all the good matches as per Lowe's ratio test.
+		good = []
+		# 舍弃大于0.7的匹配
+		for m, n in matches:
+			if m.distance < 0.7 * n.distance:
+				good.append(m)
+		
+		print len(good)
+		MIN_MATCH_COUNT = 10  # 设置最低特征点匹配数量为10
+		if len(good) > MIN_MATCH_COUNT: # 大于最低特征点匹配数量时才绘制匹配框
+			# 获取关键点的坐标
+			src_pts = np.float32(
+				[kp1[m.queryIdx].pt for m in good]).reshape(-1,1,2)
+			dst_pts = np.float32(
+				[kp2[m.trainIdx].pt for m in good]).reshape(-1,1,2)
+			# 计算变换矩阵和MASK
+			M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
+			matchesMask = mask.ravel().tolist()
+			h, w = template.shape
+			# 使用得到的变换矩阵对原图像的四个角进行变换，获得在目标图像上对应的坐标
+			pts = np.float32(
+				[[0, 0], [0, h - 1], [w - 1, h - 1], [w - 1, 0]]).reshape(
+				-1, 1, 2)
+			dst = cv2.perspectiveTransform(pts, M)
+			cv2.polylines(target, [np.int32(dst)], True, [255, 255, 255], 5,
+						  cv2.LINE_8)  # 绘制矩形
+			print [np.int32(dst)]
+			# [array([[[ 387,  746]],[[ 387, 1081]],[[ 727, 1081]],[[ 727,  746]]])]
+		else:
+			print("Not enough matches are found - %d/%d" % (
+			len(good), MIN_MATCH_COUNT))
+			matchesMask = None
+		# show match result graphically
+		if show:
+			draw_params = dict(matchColor=(0, 255, 0),
+							   singlePointColor=None,
+							   matchesMask=matchesMask,
+							   flags=2)
+			result = cv2.drawMatches(template, kp1, target, kp2, good, None,
+									 **draw_params)
+			plt.imshow(result, 'gray')
+			plt.show()
 	
 	# 在图框区域选一个点
 	def point(self, zoom=0.25, x_add=0, y_add =0):
@@ -513,6 +584,10 @@ if __name__ == '__main__':
 	os.chdir("../adb")
 	# os.system("adb connect 127.0.0.1:21505")
 	mt = ImageMatchSet(cv2.TM_CCOEFF_NORMED)
-	mt.backhome(1)
-
+	# mt.backhome(1)
+	# s_image = cv2.imread("../test/1212.png",0)
+	# mt.image_match_SIFT('../test/1212_1_0.5size.jpg', screen_image=s_image)
+	s_image = cv2.imread("../test/f1.png",0)
+	mt.image_match_SIFT('../test/star.png', screen_image=s_image, show=True)
+	
 	
