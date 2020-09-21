@@ -67,6 +67,6 @@ def read11():
         
 if __name__ == '__main__':
     # for i in xrange(9):
-        read11()
+        read21()
         # read11()
     
