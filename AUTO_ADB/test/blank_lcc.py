@@ -9,10 +9,8 @@ Description:
 Usage:
 """
 # ---------------------------------------------------------------------------
-import cv2
 import os
 import subprocess
-from DCcore import dcutility as dc
 
 # image = r"G:\MoveOn\boomboost\image\spring\spring_house.png"
 # cv2image = cv2.imread(image, 0)

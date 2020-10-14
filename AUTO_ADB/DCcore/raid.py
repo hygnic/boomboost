@@ -13,11 +13,10 @@ Usage:
 """
 # ---------------------------------------------------------------------------
 import os
-import sys
 import logging as log
 import dcutility as dc
-from conf. DClocation import Raid, RaidPhone1080X2340
-from conf.pathfile import ImageRaid
+from AUTO_ADB.conf.DClocation import RaidPhone1080X2340
+from AUTO_ADB.conf.pathfile import ImageRaid
 
 
 def check_flag():

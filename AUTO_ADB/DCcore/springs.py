@@ -11,9 +11,9 @@ Usage:
 # ---------------------------------------------------------------------------
 import os
 import time
-from conf import DClocation,pathfile
+from AUTO_ADB.conf import pathfile, DClocation
 from dcutility import humanbeing_click
-from dcutility import image_match,sleeptime,back
+from dcutility import image_match, back
 pf = pathfile.Path()
 lt = DClocation.Spring()
 

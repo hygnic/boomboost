@@ -20,9 +20,9 @@ import numpy as np
 from matplotlib import pyplot as plt
 import cv2
 import logging as log  # TODO 设置其他颜色的日志输出未果
-from conf.DClocation import General
-from conf import pathfile
-from conf.DClocation import Spring
+from AUTO_ADB.conf.DClocation import General
+from AUTO_ADB.conf import pathfile
+from AUTO_ADB.conf.DClocation import Spring
 
 
 image_pf = pathfile.Path() # 部分配置的图片地址信息 #TODO 我也不知道是哪里的

@@ -11,8 +11,8 @@ Usage:
 # ---------------------------------------------------------------------------
 import os
 import dcutility as dc
-from conf.DClocation import General
-from conf.pathfile import ImageDaily
+from AUTO_ADB.conf.DClocation import General
+from AUTO_ADB.conf.pathfile import ImageDaily
 
 ims =  dc.ImageMatchSet()
 lt_gl = General()

@@ -13,8 +13,7 @@ import os
 import sys
 import time
 
-from conf import DClocation
-from conf import pathfile
+from AUTO_ADB.conf import pathfile, DClocation
 from dcutility import humanbeing_click, humanbeing_click_point, sleeptime
 from dcutility import screenswipe, cancel_selection
 from dcutility import back

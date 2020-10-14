@@ -13,9 +13,9 @@ import os
 import sys
 import logging as log
 import dcutility as dc
-from conf. DClocation import General
-from conf. DClocation import AgateToCoin
-from conf.pathfile import ImageAgateToCoin
+from AUTO_ADB.conf.DClocation import General
+from AUTO_ADB.conf.DClocation import AgateToCoin
+from AUTO_ADB.conf.pathfile import ImageAgateToCoin
 
 ims = dc.ImageMatchSet()
 lt_gl = General()  # 位置
