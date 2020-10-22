@@ -30,11 +30,11 @@ def create_gif(image_list, gif_name, duration=1.0):
 
 def main():
 	# 这里放上自己所需要合成的图片
-	path = r"C:\Users\Administrator\OneDrive\202010\出图美化\标注效果图"
+	path = r"C:\Users\Administrator\OneDrive\202010\土地报备坐标txt文件转Shp遇到的坑以及该功能的 Python(Arcpy) 实现"
 	os.chdir(path)
 	image_list = [
-		 '显示所有标注效果图.png',
-		 '从不移除效果图.png','从不移除效果图.PNG',
+		 '错误合并.jpg',
+		 '正确合并.jpg', '正确合并.jpg'
 	]
 	gif_name = '1.gif'
 	duration = 1.25
