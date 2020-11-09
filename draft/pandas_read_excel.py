@@ -14,17 +14,17 @@ import pandas as pd
 import os
 
 
-current_path = r'D:\test\gdzldj'
-os.chdir(current_path)
-
-excel_path = '耕地质量变更调查表.xls'
-sheet = pd.read_excel(excel_path,sheet_name=1)
+# current_path = r'D:\test\gdzldj'
+# os.chdir(current_path)
+#
+# excel_path = '耕地质量变更调查表.xls'
+# sheet = pd.read_excel(excel_path,sheet_name=1)
 # 输出csv文件
 # sheet.to_csv("data.csv", sep=",", index=False,encoding="cp936")
-pH_des = sheet["pH"]
-row = pH_des.std()
-print(pH_des)
-print(row)
+# pH_des = sheet["pH"]
+# row = pH_des.std()
+# print(pH_des)
+# print(row)
 
 import pandas as pd
 import numpy as np

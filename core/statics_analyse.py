@@ -11,11 +11,13 @@ Usage:
 # ---------------------------------------------------------------------------
 import pandas as pd
 import matplotlib.pyplot as plt
-import pathlib
+import os
 
-current_path = r'D:\test\gdzldj'
+current_path = '.'
 os.chdir(current_path)
 
 excel_path = '耕地质量变更调查表.xls'
-sheet = pd.read_excel(excel_path,sheet_name=1)
-
+sheet = pd.read_excel(excel_path,sheet_name=0)
+# print(sheet)
+pH1= sheet.groupby(['pH']).mean()
+print(pH1)
