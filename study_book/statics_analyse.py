@@ -19,5 +19,10 @@ os.chdir(current_path)
 excel_path = '耕地质量变更调查表.xls'
 sheet = pd.read_excel(excel_path,sheet_name=0)
 # print(sheet)
-pH1= sheet.groupby(['pH']).mean()
-print(pH1)
+sheet_pH = sheet['pH']
+
+aa = sheet.index.name
+
+print(aa)
+
+
