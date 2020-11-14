@@ -5,7 +5,7 @@
 # Created on: 2020/11/9 16:45
 # Reference:
 """
-Description: 对耕地质量等级点位表进行分析统计、绘图
+Description: 对耕地质量等级点位表进行基本分析 统计最值、标准差、变异系数等
 Usage:
 """
 # ---------------------------------------------------------------------------
@@ -43,7 +43,27 @@ min      5.000000   11.100000    0.920000    2.200000   49.000000
 max      8.900000   80.000000    1.690000   92.600000  350.000000
 """
 
-target_data = target_data.reindex(['min','max','50%','mean','std'])
+# 移动位置&保留一位小数
+target_data = target_data.reindex(['min','max','50%','mean','std']).round(1)
+# 重命名
 target_data = target_data.rename(index={'min':'最小值','max':'最大值','50%':'中位数','mean':'平均值','std':'标准差'})
-print(target_data.round())
-target_data.round().to_csv("data.csv", sep=",", index=True,encoding="cp936")
+# 变异系数
+data_cv=(target_data.loc['标准差',:])/(target_data.loc['平均值',:])
+data_cv.name = '变异系数（%）' # 添加 serise 名称
+"""
+pH      0.096502
+有机质     0.352769
+土壤容重    0.107699
+有效磷     0.876422
+速效钾     0.435544
+Name: 变异系数,dtype: float64
+"""
+data_cv =(data_cv*100).round(1)
+target_data2=target_data.append(data_cv)
+
+# 保留一位小数
+target_data2.to_csv("data.csv", sep=",", index=True,encoding="cp936")
+
+
+
+print(target_data2)
