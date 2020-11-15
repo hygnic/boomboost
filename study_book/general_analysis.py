@@ -20,6 +20,7 @@ excel_path = '耕地质量变更调查表.xls'
 sheet = pd.read_excel(excel_path,sheet_name=0)
 col_names = ['pH','有机质','土壤容重','有效磷','速效钾']
 target_data = pd.DataFrame(sheet,columns = col_names)
+raw_data = target_data
 """
       pH   有机质  土壤容重   有效磷  速效钾
 0    7.1  64.0  1.04  38.7  310
@@ -29,6 +30,11 @@ target_data = pd.DataFrame(sheet,columns = col_names)
 4    7.7  38.8  1.34  62.8  118
 ..   ...   ...   ...   ...  ...
 """
+
+
+"""__________________________________________________________________________"""
+"""________________________________数据表_____________________________________"""
+
 
 target_data = target_data.describe()
 """
@@ -59,11 +65,54 @@ pH      0.096502
 Name: 变异系数,dtype: float64
 """
 data_cv =(data_cv*100).round(1)
-target_data2=target_data.append(data_cv)
+data_table=target_data.append(data_cv)
 
 # 保留一位小数
-target_data2.to_csv("data.csv", sep=",", index=True,encoding="cp936")
+data_table.to_csv("data.csv", sep=",", index=True, encoding="cp936")
+"""
+          pH   有机质  土壤容重   有效磷    速效钾
+最小值      5.0  11.1   0.9   2.2   49.0
+最大值      8.9  80.0   1.7  92.6  350.0
+中位数      7.7  42.0   1.4  16.4  173.0
+平均值      7.6  41.9   1.4  23.6  193.3
+标准差      0.7  14.0   0.1  21.2   84.0
+变异系数（%）  9.2  33.4   7.1  89.8   43.5
+"""
+
+"""__________________________________________________________________________"""
+"""_______________________________数据描述____________________________________"""
+
+list1=[]
+for index,row in data_table.T.iterrows():
+	info = "{0}变化范围为{1}-{2}，均值为{3}，变异系数为{4}%；".format(
+		index,row['最小值'],row['最大值'],row['平均值'],row['变异系数（%）'])
+	list1.append(info)
+# 拼接字符串
+data_describe= ''.join(list1)
+"""
+pH变化范围为5.0-8.9，均值为7.6，变异系数为9.2%；有机质变化范围为11.1-80.0，均值为41.9，
+变异系数为33.4%；土壤容重变化范围为0.9-1.7，均值为1.4，变异系数为7.1%；有效磷变化范围
+为2.2-92.6，均值为23.6，变异系数为89.8%；速效钾变化范围为49.0-350.0，均值为193.3，
+变异系数为43.5%；
+"""
 
 
 
-print(target_data2)
+"""__________________________________________________________________________"""
+"""_______________________________绘制图形____________________________________"""
+
+
+
+
+"""--------------------------------------------------------------------------"""
+# print(data_describe)
+	
+
+import plotly.graph_objects as go
+import plotly.express as px
+
+df = data_table # iris is a pandas DataFrame
+fig = px.scatter(df, x="sepal_width", y="sepal_length")
+
+# fig.show()
+fig.write_html('first_figure.html', auto_open=True)
