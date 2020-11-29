@@ -113,12 +113,18 @@ import plotly.express as px
 
 
 # frequency distribution
+# 各项指标的分界点
 yjz = [-float("inf"),6,10,20,30,40,float("inf")] # 有机质
-qd = [0.5,0.75,1,1.5,2] # 全氮
-sxd = [30,60,90,120,150] # 速效氮
-yxl = [3,5,10,20,40] # 有效磷
-sxj = [30,50,100,150,200] # 速效钾
-hxj = [100,200,300,400,500] # 缓效钾
+qd = [-float("inf"),0.5,0.75,1,1.5,2,float("inf")] # 全氮
+sxd = [-float("inf"),30,60,90,120,150,float("inf")] # 速效氮
+yxl = [-float("inf"),3,5,10,20,40,float("inf")] # 有效磷
+sxj = [-float("inf"),30,50,100,150,200,float("inf")] # 速效钾
+hxj = [-float("inf"),100,200,300,400,500,float("inf")] # 缓效钾
+
+factor_dict ={zip(["有机质","全氮","速效氮","有效磷","速效钾","缓效钾"],
+				  [yjz,qd,sxd,yxl,sxj,hxj])}
+
+print(factor_dict)
 
 # 有机质 全氮 速效氮 有效磷 速效钾 缓效钾
 label_name1 = ["低于临界值","极缺乏","缺乏","中等","丰富","很丰富"]
@@ -135,11 +141,12 @@ Name: 有机质, dtype: int64
 """
 # print(yjz_fd)
 # import plotly.express as px
-# fig = px.bar(yjz_fd, title="{}分布情况".format(yjz_fd.name),x=yjz_fd.name)
+# fig = px.bar(yjz_fd, title="{}分布情况".format(yjz_fd.name))
 # fig.write_html('first_figure.html', auto_open=True)
 
+
 import plotly.express as px
-print(px.data.gapminder().query("country == 'Canada'"))
 data_canada = px.data.gapminder().query("country == 'Canada'")
 fig = px.bar(data_canada, x='year', y='pop')
-fig.show()
+fig.write_html('first_figure.html', auto_open=True)
+print(px.data.gapminder().query("country == 'Canada'"))
