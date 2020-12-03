@@ -11,10 +11,10 @@ Usage:
 # ---------------------------------------------------------------------------
 import pandas as pd
 import matplotlib.pyplot as plt
-import os
+from os import chdir,path,mkdir
 
 current_path = '.'
-os.chdir(current_path)
+chdir(current_path)
 
 excel_path = '耕地质量变更调查表.xls'
 sheet = pd.read_excel(excel_path,sheet_name=0)
@@ -100,53 +100,31 @@ pH变化范围为5.0-8.9，均值为7.6，变异系数为9.2%；有机质变化�
 
 """__________________________________________________________________________"""
 """_______________________________绘制图形____________________________________"""
-
-
-
-
-"""--------------------------------------------------------------------------"""
-# print(data_describe)
 import plotly.graph_objects as go
 import plotly.express as px
 
+"""-------------------------------点图---------------------------------------"""
 
 
-
-# frequency distribution
-# 各项指标的分界点
-yjz = [-float("inf"),6,10,20,30,40,float("inf")] # 有机质
-qd = [-float("inf"),0.5,0.75,1,1.5,2,float("inf")] # 全氮
-sxd = [-float("inf"),30,60,90,120,150,float("inf")] # 速效氮
-yxl = [-float("inf"),3,5,10,20,40,float("inf")] # 有效磷
-sxj = [-float("inf"),30,50,100,150,200,float("inf")] # 速效钾
-hxj = [-float("inf"),100,200,300,400,500,float("inf")] # 缓效钾
-
-factor_dict ={zip(["有机质","全氮","速效氮","有效磷","速效钾","缓效钾"],
-				  [yjz,qd,sxd,yxl,sxj,hxj])}
-
-print(factor_dict)
-
-# 有机质 全氮 速效氮 有效磷 速效钾 缓效钾
-label_name1 = ["低于临界值","极缺乏","缺乏","中等","丰富","很丰富"]
-
-yjz_fd = pd.value_counts(pd.cut(raw_data["有机质"], yjz, labels=label_name1))
-"""
-很丰富      98
-丰富       39
-中等       27
-缺乏       13
-极缺乏       0
-低于临界值     0
-Name: 有机质, dtype: int64
-"""
-# print(yjz_fd)
-# import plotly.express as px
-# fig = px.bar(yjz_fd, title="{}分布情况".format(yjz_fd.name))
-# fig.write_html('first_figure.html', auto_open=True)
-
-
-import plotly.express as px
-data_canada = px.data.gapminder().query("country == 'Canada'")
-fig = px.bar(data_canada, x='year', y='pop')
-fig.write_html('first_figure.html', auto_open=True)
-print(px.data.gapminder().query("country == 'Canada'"))
+def violin_strip_chart(data,y_axis,width=550, height=600,image_form = "png"):
+	"""
+	基于 plotly 绘制一维数据的分布点图（类似于小提琴图）
+	reference: https://plotly.com/python/static-image-export/
+	:param data: {Dataframe，Array}
+	:param y_axis: {String} 列名
+	:param width: {Int}
+	:param height: {Int}
+	:param image_form: {String} "png" "jpeg" ...
+	"""
+	fig = px.strip(data, y=y_axis,width=width, height=height,
+					title="{}含量分布点图".format(y_axis))
+	# fig.write_html('first_figure2.html', auto_open=True)
+	if not path.exists("images"):
+		mkdir("images")
+	name = "{}.{}".format(y_axis,image_form)
+	# 输出图片
+	fig.write_image("images//"+name, scale=3)
+	# fig.write_image("images/fig1.png")
+	
+for a_c in col_names:
+	violin_strip_chart(raw_data,a_c)
