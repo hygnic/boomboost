@@ -18,7 +18,7 @@ chdir(current_path)
 
 excel_path = '耕地质量变更调查表.xls'
 sheet = pd.read_excel(excel_path,sheet_name=0)
-col_names = ['pH','有机质','土壤容重','有效磷','速效钾']
+col_names = ['pH','有机质','土壤容重','有效磷','速效钾',"有效土层厚"]
 target_data = pd.DataFrame(sheet,columns = col_names)
 raw_data = target_data
 """
