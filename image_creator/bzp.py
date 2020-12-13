@@ -13,7 +13,7 @@ Description: 使用一张底图文件
 Usage:
 """
 # ---------------------------------------------------------------------------
-from PIL import Image, ImageDraw, ImageFont, ImageGrab
+from PIL import Image, ImageDraw, ImageFont
 from os import path
 import pandas as pd
 
