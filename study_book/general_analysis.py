@@ -10,16 +10,13 @@ Usage:
 """
 # ---------------------------------------------------------------------------
 import pandas as pd
-import matplotlib.pyplot as plt
-from os import chdir,path,mkdir
+from os import path,mkdir
 
-current_path = '.'
-chdir(current_path)
 
 excel_path = '耕地质量变更调查表.xls'
-sheet = pd.read_excel(excel_path,sheet_name=0)
+sheet = pd.read_excel(excel_path, sheet_name=0)
 col_names = ['pH','有机质','土壤容重','有效磷','速效钾',"有效土层厚"]
-target_data = pd.DataFrame(sheet,columns = col_names)
+target_data = pd.DataFrame(sheet, columns=col_names)
 raw_data = target_data
 """
       pH   有机质  土壤容重   有效磷  速效钾
@@ -31,11 +28,7 @@ raw_data = target_data
 ..   ...   ...   ...   ...  ...
 """
 
-
-"""__________________________________________________________________________"""
-"""________________________________数据表_____________________________________"""
-
-
+# 使用describe() 方法可以快速获取数据的基本信息
 target_data = target_data.describe()
 """
                pH         有机质        土壤容重         有效磷         速效钾
@@ -53,7 +46,7 @@ max      8.900000   80.000000    1.690000   92.600000  350.000000
 target_data = target_data.reindex(['min','max','50%','mean','std']).round(1)
 # 重命名
 target_data = target_data.rename(index={'min':'最小值','max':'最大值','50%':'中位数','mean':'平均值','std':'标准差'})
-# 变异系数
+# 变异系数（标准差/平均值）
 data_cv=(target_data.loc['标准差',:])/(target_data.loc['平均值',:])
 data_cv.name = '变异系数（%）' # 添加 serise 名称
 """
@@ -65,9 +58,12 @@ pH      0.096502
 Name: 变异系数,dtype: float64
 """
 data_cv =(data_cv*100).round(1)
+# 将变异系数加入表中
 data_table=target_data.append(data_cv)
 
-# 保留一位小数
+"""__________________________________________________________________________"""
+"""________________________________data table________________________________"""
+# 保留一位小数 输出表
 data_table.to_csv("data.csv", sep=",", index=True, encoding="cp936")
 """
           pH   有机质  土壤容重   有效磷    速效钾
@@ -80,51 +76,112 @@ data_table.to_csv("data.csv", sep=",", index=True, encoding="cp936")
 """
 
 """__________________________________________________________________________"""
-"""_______________________________数据描述____________________________________"""
+"""______________________________data describe_______________________________"""
 
 list1=[]
 for index,row in data_table.T.iterrows():
-	info = "{0}变化范围为{1}-{2}，均值为{3}，变异系数为{4}%；".format(
-		index,row['最小值'],row['最大值'],row['平均值'],row['变异系数（%）'])
+	info = "{0}变化范围为{1}-{2}，均值为{3}，中位数为{4}，标准差为{5}，变异系数为{6}%；".format(
+		index,row['最小值'],row['最大值'],row['平均值'],row['中位数'],row['标准差'],row['变异系数（%）'])
 	list1.append(info)
 # 拼接字符串
 data_describe= ''.join(list1)
+print(data_describe)
 """
-pH变化范围为5.0-8.9，均值为7.6，变异系数为9.2%；有机质变化范围为11.1-80.0，均值为41.9，
-变异系数为33.4%；土壤容重变化范围为0.9-1.7，均值为1.4，变异系数为7.1%；有效磷变化范围
-为2.2-92.6，均值为23.6，变异系数为89.8%；速效钾变化范围为49.0-350.0，均值为193.3，
-变异系数为43.5%；
+文字输出示例如下：
+pH变化范围为5.0-8.9，均值为7.6，中位数为7.7，标准差为0.7，变异系数为9.2%；
+有机质变化范围为11.1-80.0，均值为41.9，中位数为42.0，标准差为14.0，变异系数为33.4%；
+土壤容重变化范围为0.9-1.7，均值为1.4，中位数为1.4，标准差为0.1，变异系数为7.1%；
+有效磷变化范围为2.2-92.6，均值为23.6，中位数为16.4，标准差为21.2，变异系数为89.8%；
+速效钾变化范围为49.0-350.0，均值为193.3，中位数为173.0，标准差为84.0，变异系数为43.5%；
+有效土层厚变化范围为33.0-160.0，均值为70.6，中位数为67.0，标准差为22.2，变异系数为31.4%；
 """
 
 
 
 """__________________________________________________________________________"""
-"""_______________________________绘制图形____________________________________"""
-import plotly.graph_objects as go
+"""_______________________________make chart_________________________________"""
 import plotly.express as px
 
-"""-------------------------------点图---------------------------------------"""
-
-
-def violin_strip_chart(data,y_axis,width=550, height=600,image_form = "png"):
-	"""
-	基于 plotly 绘制一维数据的分布点图（类似于小提琴图）
-	reference: https://plotly.com/python/static-image-export/
-	:param data: {Dataframe，Array}
-	:param y_axis: {String} 列名
-	:param width: {Int}
-	:param height: {Int}
-	:param image_form: {String} "png" "jpeg" ...
-	"""
-	fig = px.strip(data, y=y_axis,width=width, height=height,
-					title="{}含量分布点图".format(y_axis))
-	# fig.write_html('first_figure2.html', auto_open=True)
-	if not path.exists("images"):
-		mkdir("images")
-	name = "{}.{}".format(y_axis,image_form)
-	# 输出图片
-	fig.write_image("images//"+name, scale=3)
-	# fig.write_image("images/fig1.png")
+"""-------------------------------point chart--------------------------------"""
+class PlotChart(object):
+	def __init__(self, output_image=True, output="image"):
+		"""
+		:param output_image: {Boolean} Ture: output image; False: output html
+		:param output: {String} output path
+		"""
+		self.output_image = output_image
+		self.output = output
+		self.width = 550
+		self.height = 600
+		self.image_format = ".png"
+		if not path.exists(self.output):
+			mkdir(self.output)
 	
-for a_c in col_names:
-	violin_strip_chart(raw_data,a_c)
+	def create_chart(self, fig, name):
+		"""
+		:param fig: (PLotlt) 生成的PLotlt对象
+		:param name: 名字
+		:return:
+		"""
+		if self.output_image:
+			# 输出图像
+			fig.write_image("images//"+name+self.image_format, scale=3)
+		else:
+			# 输出交互式web版
+			fig.write_html(name+'.html', auto_open=True)
+
+
+class ViolinStripChart(PlotChart):
+	"""
+	小提琴点图
+	"""
+	def __init__(self, data, y):
+		PlotChart.__init__(self)
+		self.data = data
+		self.y = y
+		self.title = "{}含量分布点图".format(self.y)
+		fig = self.create_fig()
+		self.create_chart(fig, self.title)
+		
+		
+	def create_fig(self):
+		fig = px.strip(self.data, y=self.y, width=self.width, height=self.height,
+					   title="{}含量分布点图".format(self.y))
+		return fig
+	
+for y in col_names:
+	ViolinStripChart(raw_data,y)
+
+
+#
+# """__________________________________________________________________________"""
+# """_______________________________make chart_________________________________"""
+# import plotly.express as px
+#
+# """-------------------------------point chart--------------------------------"""
+#
+#
+# def violin_strip_chart(data, y_axis, width=550, height=600, image_form="png"):
+# 	"""
+# 	基于 plotly 绘制一维数据的分布点图（类似于小提琴图）
+# 	reference: https://plotly.com/python/static-image-export/
+# 	:param data: {Dataframe，Array}
+# 	:param y_axis: {String} 列名
+# 	:param width: {Int}
+# 	:param height: {Int}
+# 	:param image_form: {String} "png" "jpeg" ...
+# 	"""
+# 	fig = px.strip(data, y=y_axis, width=width, height=height,
+# 				   title="{}含量分布点图".format(y_axis))
+# 	# fig.write_html('first_figure2.html', auto_open=True)
+# 	if not path.exists("images"):
+# 		mkdir("images")
+# 	name = "{}.{}".format(y_axis, image_form)
+# 	# 输出图片
+# 	fig.write_image("images//" + name, scale=3)
+#
+#
+# # fig.write_image("images/fig1.png")
+#
+# for y in col_names:
+# 	violin_strip_chart(raw_data, y)
