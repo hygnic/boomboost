@@ -2,6 +2,7 @@
 # ---------------------------------------------------------------------------
 # Author: LiaoChenchen
 # Created on: 2021/1/17 14:53
+# arcpy自动化制图完全指南（一）：使用arcpy完成工作流
 
 import arcpy
 import os
@@ -40,3 +41,15 @@ class InitPath(object):
 folder_path, gdb_path = InitPath()
 arcpy.env.workspace = gdb_path
 arcpy.env.overwriteOutput = True
+
+"""********************************流程代码**********************************"""
+line = "data/line_data.shp"
+# 线要素转面，生成的面矢量名称为 polygon
+arcpy.FeatureToPolygon_management (line, "polygon")
+
+# 给 polygon 图层添加字段
+for name in ["CJQYMC", "CJQYDM", "XJQYMC", "XJQYDM"]:
+    arcpy.AddField_management("polygon", name, "TEXT", field_length = 100)
+
+
+
