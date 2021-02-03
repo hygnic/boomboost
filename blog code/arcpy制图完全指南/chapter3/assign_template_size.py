@@ -2,10 +2,10 @@
 # -*- coding:utf-8 -*-
 # ---------------------------------------------------------------------------
 # Author: LiaoChenchen
-# Created on: 2021/1/23 16:56
+# Created on: 2021/1/29 17:34
 # Reference:
 """
-Description:
+Description: 分配模板大小
 Usage:
 """
 # ---------------------------------------------------------------------------
@@ -28,14 +28,9 @@ FIELD = "CITY" # 检索字段
 MI = "MappingIndex" # 制图索引文件名称
 SCALE = 200000 # 制图的比例尺
 
-# name:width height
-# page_size_d = {
-#     "pagesize1":(1080,700),
-#     "pagesize2":(1080,1300),
-#     "pagesize3":(1180,900)
-# }
 """____________________________global_values_________________________________"""
 """__________________________________________________________________________"""
+
 arcpy.env.overwriteOutput = True
 arcpy.env.workspace = gdb_path
 
@@ -88,7 +83,7 @@ def select_template_size(size, template_size):
     elif d_len==1:
         return d2l_sorted[0][0]
     else:
-        # info="存在超出所有模板页面大小的制图单位"
+        # info="存在超出页面大小的制图单位"
         return -1
 
 
@@ -98,6 +93,7 @@ def check_field(layer, field):
     """
     fields = arcpy.ListFields(layer)
     return field in [_.name for _ in fields]
+
 
 
 class PageSizeMatch(object):
@@ -117,7 +113,7 @@ class PageSizeMatch(object):
         true_height = self.check_width_height() # 获取真实的高度信息
         self.update_width_height(true_height) # 将高度信息更新入制图索引图层（MappingIndex）
         self.update_page_size(SCALE)
-        
+    
     def minimum_bounding(self):
         """
         1.计算最小边界几何，并用结果图层覆盖初始图层;计算过最小边界几何的图层有"MBG_Width"字段
@@ -133,32 +129,27 @@ class PageSizeMatch(object):
         if not check_field(self.f,"PAGESIZE"): # 没有计算过最小几何边界
             print('ceate Field "PAGESIZE"')
             arcpy.AddField_management(self.f, "PAGESIZE", "TEXT", field_length = 100)
-
+    
     def check_width_height(self):
-        # 使用 “要素折叠转点要素” 工具，将最小几何边界转变成点数据；
+        # 使用 “要素折点转点要素” 工具，将最小几何边界转变成点；
         # 每一个最小几何边界都会生成5个点：左下，左上，右上，右下，左下；
         # 前两个点的差值就是高度
         # 返回值为高度的字典：{地级市名称：高度}
             # {..."广安市":879.2, "巴中市":124.56, "桂林市":54.7801, ...}
         feature_vertices = "feature_vertices" # feature name
         short_f = arcpy.FeatureVerticesToPoints_management
-        # short_f(self.mapindex_lyr, feature_vertices, "ALL") # ERROR 000840: 该值不是 要素图层。
         short_f(self.f, feature_vertices, "ALL")
         cursor = arcpy.da.SearchCursor(feature_vertices, [self.field, "SHAPE@Y"])
         cursor2l = [(x[0],x[1]) for x in cursor] # 转换成列表
         del cursor
-        # 仅将前两位、6 7位、11 12.. 取出组成列表
-        # 前两位（右下角的点，右上角的点，y坐标的差值就是高 height）
-        # part_info = zip(cursor2l[::5],cursor2l[1::5])
-        cursor2l_1 , cursor2l_2= cursor2l[::5], cursor2l[1::5] # [(u'\u5df4\u4e2d\u5e02', 3460475.693600001), (u'\u5df4\u4e2d\u5e02', 3331847.4146)]
-        # 获取前两个点的y差值，组合成字典
+        cursor2l_1 , cursor2l_2 = cursor2l[::5], cursor2l[1::5]  # [(u'\u5df4\u4e2d\u5e02', 3460475.693600001), (u'\u5df4\u4e2d\u5e02', 3331847.4146)]
         height_info = {}
         for i in xrange(len(cursor2l_1)):
-            height = cursor2l_2[i][1] - cursor2l_1[i][1] #　cursor2l_2[i][１]是ｙ坐标
-            height_info[cursor2l_2[i][0]] = abs(height) # cursor2l_2[i][0]是名称
+            height = cursor2l_2[i][1] - cursor2l_1[i][1]
+            height_info[cursor2l_2[i][0]] = abs(height)
         return height_info
-        
-        
+    
+    
     def update_width_height(self, height_infomation):
         """
         最小边界几何的"MBG_Width", "MBG_Length"两字段，不是宽和高的关系，二是短边和长边的关系；
@@ -169,16 +160,15 @@ class PageSizeMatch(object):
         """
         with arcpy.da.UpdateCursor(self.f, [self.field,"MBG_Width", "MBG_Length"]) as cursor:
             for row in cursor:
-                name, short, long_line = row
-                # 只两位两位小数，防止微小的误差导致不必要的错误
-                if round(height_infomation[name], 2) == round(short, 2):
-                    # 如果短边等于高度的话，将长边给字段MBG_Width，短边给MBG_Length字段
-                    row[1] = long_line
-                    row[2] = short
+                name, width, height = row
+                if round(height_infomation[name], 2) == round(width, 2):
+                    row[1] = height
+                    row[2] = width
                 cursor.updateRow(row)
         print("update width&height completly!")
 
-    def update_page_size(self, scale):
+
+    def update_page_size(self,scale):
         """
         更新填充字段 "PAGESIZE" 的值
         :param scale: {Int} 比例大小
@@ -200,107 +190,8 @@ class PageSizeMatch(object):
                     print("存在超出所有模板页面大小的制图单位")
                 cursor.updateRow(row)
         print("update PAGESIZE completly!")
-        
-        
-class MakeMXD(object):
-    
-    def __init__(self,mapdocument, layers_names, mappindex_name, query_fielf, scale=None):
-        """
-        :param mapdocument: {Object} MXD文件对象
-        :param layers_names: {List} 需要设置定义查询语句图层的名称列表
-        :param mappindex_name: {String} 索引图层名字；MappingIndex
-        :param query_fielf: {String} 定义查询使用的字段名；CITY
-        :param scale: {Int} 比例尺
-        """
-        self.mxd = mapdocument
-        self.df = arcpy.mapping.ListDataFrames(self.mxd)[0]
-        self.layers = layers_names
-        self.index_name = mappindex_name
-        self.field = query_fielf
-        self.scale = scale
-        
-        self.mapindex_lyr = arcpy.mapping.ListLayers(self.mxd,self.index_name)[0]
-        
-        self.mapping_index_query()
-        self.make_mxd()
-        
-        del self.mxd
-       
-    def mapping_index_query(self):
-        """
-        给 MappingIndex 图层设置定义查询语句; PAGESIZE = '1080x700'
-        :return:
-        """
-        map_path = self.mxd.filePath
-        name = os.path.splitext(os.path.basename(map_path))[0] # 1080x700
-        definition_query = ["PAGESIZE"," = ","'",name,"'"]
-        self.size = name
-        self.mapindex_lyr.definitionQuery = "".join(definition_query)
-        # self.mxd.saveACopy(r"E:\doc\Scratch\out\er.mxd")
-        
-    def make_mxd(self):
-        with arcpy.da.SearchCursor(self.mapindex_lyr, self.field) as cursor:
-            for row in cursor: # 提前解包？
-                name = row[0]
-                self.define_query(name) # 定义查询
-                self.center_scale(name) # 居中
-                self.change_txt(name) # 修改文本
-                self.label_query(name) # 标注查询语句
-                arcpy.SelectLayerByAttribute_management(self.mapindex_lyr, "CLEAR_SELECTION") # 取消该图层的所有选择选择项目
-                self.saveacopy(name) # 另存
-    
-    def define_query(self, value):
-        """
-        定义查询
-        :param value: {String/Int/Float} 用于定义查询的值
-        :return: None
-        """
-        for layer in self.layers:
-            lyr = arcpy.mapping.ListLayers(self.mxd, layer)[0]
-            d_q = ['"',self.field,'"'," = ","'",value,"'"]
-            # lyr.definitionQuery = '"' + FIELD + '"' + " = " + "'" + value + "'"
-            lyr.definitionQuery = "".join(d_q)
-    
-    def center_scale(self, name):
-        """
-        使图框居中并设置比例尺
-        :param name: {String/Int/Float} 用于查询语句的值
-        :return: None
-        """
-        where_clause = "{} = '{}'".format(self.field, name)
-        arcpy_slba = arcpy.SelectLayerByAttribute_management
-        arcpy_slba(self.mapindex_lyr, "NEW_SELECTION", where_clause)
-        self.df.extent = self.mapindex_lyr.getSelectedExtent()
-        if self.scale:
-            self.df.scale = self.scale
-    
-    def change_txt(self, name):
-        # 修改文本
-        for elm in arcpy.mapping.ListLayoutElements(self.mxd, 'TEXT_ELEMENT'):
-            if elm.text == "XX市铁路交通分布演示草图":
-                elm.text = "XX市铁路交通分布演示草图".replace("XX市", name)
-    
-    def label_query(self,name):
-        # 设置标注的查询语句
-        lyr_label = arcpy.mapping.ListLayers(self.mxd, "市级区域")[0]
-        if lyr_label.supports("LABELCLASSES"):
-            query = ["NOT","( ", self.field, "=", "'", name, "'", " )"] # NOT( CITY = '巴中市' )
-            for lblClass in lyr_label.labelClasses:
-                lblClass.SQLQuery = "".join(query)
-    
-    def saveacopy(self, name):
-        # 另存
-        self.mxd.saveACopy(output_dir+'/'+name+'.mxd')
-        print("Complete <name: {} size: {}> ".format(name, self.size))
-        
-
-# 第三章
-mxd_d = size_creator(mxd_template)
-PageSizeMatch(MI, FIELD, mxd_d)
 
 
-# 第四章
-for a_mxd in [x for x in os.listdir(mxd_template) if ".mxd" or ".MXD" in x]:
-    mxd_fullpath = os.path.join(mxd_template, a_mxd)
-    mxd = arcpy.mapping.MapDocument(mxd_fullpath)
-    MakeMXD(mxd, ["roads","railways","landuse","natural","buildings"], MI, FIELD, SCALE)
+if __name__ == '__main__':
+    mxd_d = size_creator(mxd_template)
+    PageSizeMatch(MI, FIELD, mxd_d)
