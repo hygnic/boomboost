@@ -35,7 +35,8 @@ def visualize(e_min, e_max, e_0):
     slider = pl.Slider(axslider, 'Epsilon', e_min, e_max, valinit=e_0)
 
     def update(val):
-        M2 = rdp(M, slider.val)
+        print(slider.val)
+        M2 = rdp(M, 1)
         line2.set_xdata(M2[:, 0])
         line2.set_ydata(M2[:, 1])
 
