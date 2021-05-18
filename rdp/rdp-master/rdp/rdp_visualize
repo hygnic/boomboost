@@ -1,6 +1,9 @@
 #!/usr/bin/env python
+# -*- coding:utf-8 -*-
+
 import pylab as pl
 import numpy as np
+from pprint import pprint
 
 from rdp import rdp
 
@@ -35,8 +38,9 @@ def visualize(e_min, e_max, e_0):
     slider = pl.Slider(axslider, 'Epsilon', e_min, e_max, valinit=e_0)
 
     def update(val):
-        print(slider.val)
-        M2 = rdp(M, 1)
+        M2 = rdp(M, 0)
+        print(M2)
+        # M2 = rdp(M, slider.val)
         line2.set_xdata(M2[:, 0])
         line2.set_ydata(M2[:, 1])
 
