@@ -32,12 +32,20 @@ print("Features Extent:{}".format(layer.GetExtent()))
 
 #       Getting features
 
-# feature = layer.GetFeature(0)
-feature = layer.GetNextFeature()
-while feature:
-    # do something here
-    feature = layer.GetNextFeature()
-    layer.ResetReading() #need if looping again
+feature = layer.GetFeature(1)
+#       Loop
+# feature = layer.GetNextFeature()
+# while feature:
+#     # do something here
+#     feature = layer.GetNextFeature()
+    # layer.ResetReading() #need if looping again
 
 #       Getting feature’s attributes
 
+fid = feature.GetField("id")
+cover = feature.GetField("cover")
+print("cover: ", cover)
+
+geometry = feature.GetGeometryRef()
+print(geometry.GetX())
+print(geometry.GetY())
