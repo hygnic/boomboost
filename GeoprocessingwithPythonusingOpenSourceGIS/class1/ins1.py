@@ -49,3 +49,7 @@ print("cover: ", cover)
 geometry = feature.GetGeometryRef()
 print(geometry.GetX())
 print(geometry.GetY())
+
+#       Create Layer
+ds = driver.CreateDataSource('test.shp')
+layer = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
