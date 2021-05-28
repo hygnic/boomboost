@@ -33,7 +33,7 @@ layer.CreateField(fieldDefn)
 line = ogr.Geometry(ogr.wkbLineString)
 line.AddPoint(10, 20)
 line.AddPoint(18, 58)
-line.SetPoint(0, 20, 89)
+# line.SetPoint(0, 20, 89)
 
 featureDefn = layer.GetLayerDefn()
 feature = ogr.Feature(featureDefn)
